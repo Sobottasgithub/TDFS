@@ -1,6 +1,7 @@
-# CPP Lib Template
+# TDFS
+Tablo Distributed File Server
 
-test with:
+run cli with:
 ```
-nix run .#test
+nix run .#cli
 ```

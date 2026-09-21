@@ -4,6 +4,14 @@
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
 
+    ttp2 = {
+      url = "github:Sobottasgithub/ttp2";
+    };
+
+    tud = {
+      url = "github:Sobottasgithub/tud";
+    };
+
     tablog = {
       url = "github:Sobottasgithub/tablog";
     };
@@ -14,6 +22,8 @@
       self,
       nixpkgs,
       tablog,
+      ttp2,
+      tud
     }:
     let
       system = "x86_64-linux";
@@ -22,12 +32,16 @@
       version = "0.0.1";
 
       libtablog = tablog.packages.${system}.lib;
+      libttp2 = ttp2.packages.${system}.lib;
+      libtud = tud.packages.${system}.lib;
 
       commonDeps = with pkgs; [
         cmake
         gcc
         gnumake
         libtablog
+        libttp2
+        libtud
       ];
 
       mkTdfsPackage =

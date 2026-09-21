@@ -1,11 +1,8 @@
 #include <tablog.h>
-
-#include "tdfs.h"
-
-using namespace tdfs;
+#include <iostream>
 
 int main() {
-    Tdfs tdfs;
+    std::cout << "TDFS CLI" << std::endl;
     
     return 0;
 }

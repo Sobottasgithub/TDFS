@@ -8,7 +8,7 @@ option(DEF_TDFS "configure library" ON)
 option(DEF_CLI "configure tdfs cli" ON)
 
 if(DEF_TDFS)
-    add_subdirectory(lib/tdfs)
+    add_subdirectory(tdfs)
 endif()
 
 # TDFS CARGV client

@@ -9,13 +9,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 # file(GLOB_RECURSE HEADERS "include/*.h")
 
-add_library(tdfs SHARED ${SOURCES})
-
-target_include_directories(tdfs PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/include
-)
+add_executable(tdfs ${SOURCES})
 
 target_link_libraries(tdfs PRIVATE tablog)
 
-install(TARGETS tdfs DESTINATION lib)
-install(DIRECTORY include/ DESTINATION include)
+install(TARGETS tdfs DESTINATION bin)

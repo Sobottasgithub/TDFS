@@ -8,7 +8,6 @@ file(GLOB_RECURSE SOURCES "./*.cpp" "./*.h")
 
 add_executable(tdfs-cli ${SOURCES})
 
-target_link_libraries(tdfs-cli PRIVATE tdfs)
 target_link_libraries(tdfs-cli PRIVATE tablog)
 
 install(TARGETS tdfs-cli DESTINATION bin)

@@ -34,7 +34,7 @@
         {
           pname,
           buildTarget,
-          enableLib ? false,
+          enableTdfs ? false,
           enableCli ? false,
           extraInputs ? [ ],
         }:
@@ -47,7 +47,7 @@
           configurePhase = ''
             cmake -B build -S $src \
               -DCMAKE_BUILD_TYPE=Release \
-              -DDEF_TDFS=${if enableLib then "ON" else "OFF"} \
+              -DDEF_TDFS=${if enableTdfs then "ON" else "OFF"} \
               -DDEF_CLI=${if enableCli then "ON" else "OFF"}
           '';
 
@@ -67,30 +67,27 @@
     {
       packages.${system} =
         let
-          lib = mkTdfsPackage {
-            pname = "libTdfs";
+          inherit libtablog;
+
+          tdfs = mkTdfsPackage {
+            pname = "tdfs";
             buildTarget = "tdfs";
-            enableLib = true;
+            enableTdfs = true;
+            extraInputs = [ ];
           };
-        in
-        {
-          inherit lib libtablog;
 
           cli = mkTdfsPackage {
             pname = "tdfs-cli";
             buildTarget = "tdfs-cli";
             enableCli = true;
-            extraInputs = [ lib ];
+            extraInputs = [ ];
           };
+        in
+        {
+          inherit tdfs;
+          tdfs-cli = cli;
 
-          full = mkTdfsPackage {
-            pname = "libTdfs-full";
-            buildTarget = "all";
-            enableLib = true;
-            enableCli = true;
-          };
-
-          default = self.packages.${system}.lib;
+          default = tdfs;
         };
 
       devShells.${system}.default = pkgs.mkShell {

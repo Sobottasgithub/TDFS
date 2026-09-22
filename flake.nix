@@ -43,6 +43,7 @@
         libttp2
         libtud
         readline
+        pkg-config
       ];
 
       mkTdfsPackage =

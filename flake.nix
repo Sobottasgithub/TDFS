@@ -42,6 +42,7 @@
         libtablog
         libttp2
         libtud
+        readline
       ];
 
       mkTdfsPackage =

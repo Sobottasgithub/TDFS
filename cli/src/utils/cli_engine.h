@@ -9,6 +9,7 @@ namespace tdfs {
 
       private:
         void displayWelcomeMessage();
+        void displayHelp();
     };
   }
 }

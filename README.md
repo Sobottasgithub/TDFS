@@ -7,5 +7,5 @@ nix run .#tdfs
 
 run cli with:
 ```bash
-nix run .#tdfs-cli
+nix run .#cli
 ```

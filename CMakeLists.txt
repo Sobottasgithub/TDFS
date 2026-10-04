@@ -9,7 +9,7 @@ option(DEF_TDFS "configure tdfs" ON)
 option(DEF_CLI "configure tdfs cli" ON)
 
 if (DEF_NETWORKMANAGER)
-    add_subdirectory(libnetworkmanager)
+    add_subdirectory(lib/libnetworkmanager)
 endif()
 
 if(DEF_TDFS)

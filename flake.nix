@@ -98,14 +98,14 @@
             pname = "tdfs";
             buildTarget = "tdfs";
             enableTdfs = true;
-            extraInputs = [ ];
+            extraInputs = [ lib ];
           };
 
           cli = mkTdfsPackage {
             pname = "tdfs-cli";
             buildTarget = "tdfs-cli";
             enableCli = true;
-            extraInputs = [ ];
+            extraInputs = [ lib ];
           };
 
           default = self.packages.${system}.lib;

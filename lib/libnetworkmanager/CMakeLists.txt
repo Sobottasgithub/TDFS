@@ -16,6 +16,7 @@ target_include_directories(networkmanager PUBLIC
 )
 
 target_link_libraries(networkmanager PRIVATE tablog)
+target_link_libraries(networkmanager PRIVATE ttp2)
 
 install(TARGETS networkmanager DESTINATION lib)
 install(DIRECTORY include/ DESTINATION include)

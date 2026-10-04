@@ -23,7 +23,7 @@
       nixpkgs,
       tablog,
       ttp2,
-      tud
+      tud,
     }:
     let
       system = "x86_64-linux";
@@ -43,6 +43,7 @@
         libttp2
         libtud
         readline
+        arrow-cpp
         pkg-config
       ];
 
@@ -91,7 +92,7 @@
             enableLib = true;
           };
         in
-         {
+        {
           inherit lib libtablog;
 
           tdfs = mkTdfsPackage {

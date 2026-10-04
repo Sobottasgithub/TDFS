@@ -1,5 +1,5 @@
-#ifndef PACKET_TYPES_H
-#define PACKET_TYPES_H
+#ifndef COMMAND_PACKET_TYPES_H
+#define COMMAND_PACKET_TYPES_H
 
 #include <string>
 #include <vector>

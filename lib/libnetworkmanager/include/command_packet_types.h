@@ -3,6 +3,7 @@
 
 #include <string>
 #include <vector>
+#include <variant>
 
 namespace tdfs {
   namespace network_manager {
@@ -13,6 +14,8 @@ namespace tdfs {
     struct LsSolution {
       std::vector<std::string> content;
     };
+
+    typedef std::variant<Ls, LsSolution> packet_variant; 
   }
 }
 

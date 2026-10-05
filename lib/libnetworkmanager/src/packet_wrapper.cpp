@@ -1,11 +1,24 @@
 #include "../include/packet_wrapper.h"
 #include "../include/packet_identifier.h"
 #include "../include/command_packet_types.h"
+#include <packet_types.h>
 #include <stdexcept>
+#include <variant>
 
 namespace tdfs::network_manager {
   ttp2::Packet::Universal PacketWrapper::toUniversal(packet_variant packet) {
-    
+    ttp2::Packet::Universal universal;
+
+    if (std::holds_alternative<struct tdfs::network_manager::Ls>(packet)) {
+      universal.type = tdfs::network_manager::PacketIdentifiers::Ls;
+    } else if (std::holds_alternative<struct tdfs::network_manager::LsSolution>(packet)) {
+      universal.type = tdfs::network_manager::PacketIdentifiers::LsSolution;
+    } else {
+      throw std::invalid_argument("Error encoding payload: Unknown type!");
+    }
+
+    universal.bytes = structToBytes(packet);
+    return universal;
   }
   
   packet_variant PacketWrapper::fromUniversal(ttp2::Packet::Universal universal) {

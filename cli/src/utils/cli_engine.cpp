@@ -1,6 +1,7 @@
 #include "cli_engine.h"
 
 #include <iostream>
+#include <packet_types.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <string>
@@ -29,13 +30,11 @@ namespace tdfs::cli {
       } else if (!stringQuery.compare("c")) {
         // TODO: connect to tdfs server
       } else {
-        tokenizer::GenericCommand genericCommand = tokenizer::tokenize(stringQuery);
-        std::cout << "GENERIC COMMAND: " << genericCommand.command << std::endl;
-        for (int index = 0; index < genericCommand.flags.size(); index++) {
-          std::cout << "f" << index << " " << genericCommand.flags.at(index) << std::endl;
-        }
-        for (int index = 0; index < genericCommand.values.size(); index++) {
-          std::cout << "v" << index << " " << genericCommand.values.at(index) << std::endl;
+        try {
+          tokenizer::GenericCommand genericCommand = tokenizer::tokenize(stringQuery);
+          ttp2::Packet::Packet packet = interpreter::interpret(genericCommand);
+        } catch (const std::invalid_argument& invalidArgument) {
+          std::cout << "\033[45;101m ERROR: \033[0m " << invalidArgument.what() << std::endl;
         }
       }
     }

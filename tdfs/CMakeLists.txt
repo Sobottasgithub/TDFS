@@ -9,11 +9,14 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 # file(GLOB_RECURSE HEADERS "include/*.h")
 
+find_package(pugixml REQUIRED)
+
 add_executable(tdfs ${SOURCES})
 
 target_link_libraries(tdfs PRIVATE networkmanager)
 target_link_libraries(tdfs PRIVATE tablog)
 target_link_libraries(tdfs PRIVATE ttp2)
 target_link_libraries(tdfs PRIVATE tud)
+target_link_libraries(tdfs PRIVATE pugixml::pugixml)
 
 install(TARGETS tdfs DESTINATION bin)

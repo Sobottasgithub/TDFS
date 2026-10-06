@@ -44,6 +44,7 @@
         libtud
         readline
         arrow-cpp
+        pugixml
         pkg-config
       ];
 

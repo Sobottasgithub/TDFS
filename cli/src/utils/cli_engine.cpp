@@ -5,6 +5,9 @@
 #include <readline/history.h>
 #include <string>
 
+#include "tokenizer.h"
+#include "interpreter.h"
+
 namespace tdfs::cli {
   CliEngine::CliEngine() {
     displayWelcomeMessage();
@@ -23,8 +26,17 @@ namespace tdfs::cli {
         // TODO: disconnect from tdfs server
         queryCycle = false;
         std::cout << "terminated" << std::endl;
+      } else if (!stringQuery.compare("c")) {
+        // TODO: connect to tdfs server
       } else {
-        // TODO: parse tdfs query string
+        tokenizer::GenericCommand genericCommand = tokenizer::tokenize(stringQuery);
+        std::cout << "GENERIC COMMAND: " << genericCommand.command << std::endl;
+        for (int index = 0; index < genericCommand.flags.size(); index++) {
+          std::cout << "f" << index << " " << genericCommand.flags.at(index) << std::endl;
+        }
+        for (int index = 0; index < genericCommand.values.size(); index++) {
+          std::cout << "v" << index << " " << genericCommand.values.at(index) << std::endl;
+        }
       }
     }
   }

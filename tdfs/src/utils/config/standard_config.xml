@@ -18,4 +18,14 @@
     <name>data.directory</name>
     <value></value>
   </property>
+
+  <property>
+    <name>floating.node</name>
+    <value>false</value>
+  </property>
+
+  <property>
+    <name>name.node</name>
+    <value>false</value>
+  </property>
 </configuration>

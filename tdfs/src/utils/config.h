@@ -3,6 +3,7 @@
 
 #include <pugixml.hpp>
 #include <filesystem>
+#include <vector>
 
 namespace tdfs {
   class Config {
@@ -15,6 +16,13 @@ namespace tdfs {
       static Config& getInstance();
 
       void configure(std::string configFilePath = "");
+
+      int getConfigReplications();
+      int getConfigBlocksize();
+      std::filesystem::path getConfigNameDir();
+      std::vector<std::filesystem::path> getConfigDataDir();
+      bool getConfigIsFloatingNode();
+      bool getConfigIsNameNode();
       
     private:
       pugi::xml_document defaultConfigDocument;
@@ -24,6 +32,11 @@ namespace tdfs {
       
       void loadFile(std::filesystem::path path);
       void verifyConfig();
+
+      int getIntValueFromConfig(std::string key);
+      bool getBoolValueFromConfig(std::string key);
+      std::filesystem::path getPathValueFromConfig(std::string key);
+      std::vector<std::filesystem::path> getPathValuesFromConfig(std::string key);
 
       std::filesystem::path getTdfsConfigDir();
       std::filesystem::path getConfigDir();

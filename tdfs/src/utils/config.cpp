@@ -27,6 +27,30 @@ namespace tdfs {
     }
   }
 
+  int Config::getConfigReplications() {
+    return getIntValueFromConfig("/configuration/property[name='replications']/value");
+  }
+
+  int Config::getConfigBlocksize() {
+    return getIntValueFromConfig("/configuration/property[name='blocksize']/value");
+  }
+  
+  std::filesystem::path Config::getConfigNameDir() {
+    return getPathValueFromConfig("/configuration/property[name='name.directory']/value");
+  }
+
+  std::vector<std::filesystem::path> Config::getConfigDataDir() {
+    return getPathValuesFromConfig("/configuration/property[name='data.directory']/value");
+  }
+
+  bool Config::getConfigIsFloatingNode() {
+    return getBoolValueFromConfig("/configuration/property[name='floating.node']/value");
+  }
+  
+  bool Config::getConfigIsNameNode() {
+    return getBoolValueFromConfig("/configuration/property[name='name.node']/value");
+  }
+ 
   void Config::loadFile(std::filesystem::path path) {
     pugi::xml_parse_result result = configDocument.load_file(path.c_str());
     if (!result) {
@@ -68,6 +92,42 @@ namespace tdfs {
         value.append_child(pugi::node_pcdata).set_value(defaultProperty.child_value("value"));
       }
     }    
+  }
+
+  int Config::getIntValueFromConfig(std::string key) {
+    pugi::xpath_node value = configDocument.select_node(key.c_str());
+    if (value) {
+      return value.node().text().as_int();
+    } else {
+      throw std::invalid_argument(key + " has no value");
+    }
+  }
+
+  bool Config::getBoolValueFromConfig(std::string key) {
+    pugi::xpath_node value = configDocument.select_node(key.c_str());
+    if (value) {
+      return value.node().text().as_bool();
+    } else {
+      throw std::invalid_argument(key + " has no value");
+    }
+  }
+
+  std::filesystem::path Config::getPathValueFromConfig(std::string key) {
+    pugi::xpath_node value = configDocument.select_node(key.c_str());
+    if (value) {
+      return std::filesystem::path(value.node().child_value());
+    } else {
+      throw std::invalid_argument(key + " has no value");
+    }
+  }
+
+  std::vector<std::filesystem::path> Config::getPathValuesFromConfig(std::string key) {
+    std::vector<std::filesystem::path> paths;
+    pugi::xpath_node_set dataDirNodes = configDocument.select_nodes(key.c_str());
+    for (pugi::xpath_node dataDirNode : dataDirNodes) {
+      paths.push_back(std::filesystem::path(dataDirNode.node().child_value()));
+    }
+    return paths;
   }
 
   std::filesystem::path Config::getTdfsConfigDir() {

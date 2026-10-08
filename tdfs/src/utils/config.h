@@ -17,9 +17,12 @@ namespace tdfs {
       void configure(std::string configFilePath = "");
       
     private:
+      pugi::xml_document defaultConfigDocument;
       pugi::xml_document configDocument;
 
       Config() = default;
+      void verifyConfig();
+
       std::filesystem::path getTdfsConfigDir();
       std::filesystem::path getConfigDir();
   };

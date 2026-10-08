@@ -18,17 +18,22 @@ namespace tdfs {
 
     std::filesystem::path userConfigFilePath = getTdfsConfigDir() / "config.xml";
     if (configFilePath.size() == 0 && std::filesystem::exists(userConfigFilePath)) { // Use config
-      pugi::xml_parse_result result = configDocument.load_file(userConfigFilePath.c_str());
-      if (!result) {
-        throw std::invalid_argument("Error while loading default config");
-      }
-      verifyConfig();
-      configDocument.save_file(userConfigFilePath.c_str()); // store potential corrections
+      loadFile(userConfigFilePath);
     } else if (configFilePath.size() == 0) { // Create and use new config
       defaultConfigDocument.save_file(userConfigFilePath.c_str());
       configDocument.reset(defaultConfigDocument);
     } else { // Use provided config
+      loadFile(std::filesystem::path(configFilePath));
     }
+  }
+
+  void Config::loadFile(std::filesystem::path path) {
+    pugi::xml_parse_result result = configDocument.load_file(path.c_str());
+    if (!result) {
+      throw std::invalid_argument("Error while loading config");
+    }
+    verifyConfig();
+    configDocument.save_file(path.c_str()); // store potential corrections
   }
 
   void Config::verifyConfig() {

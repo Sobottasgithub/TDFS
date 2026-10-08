@@ -21,6 +21,8 @@ namespace tdfs {
       pugi::xml_document configDocument;
 
       Config() = default;
+      
+      void loadFile(std::filesystem::path path);
       void verifyConfig();
 
       std::filesystem::path getTdfsConfigDir();

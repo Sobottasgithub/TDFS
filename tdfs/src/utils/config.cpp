@@ -10,10 +10,10 @@ namespace tdfs {
   }
 
   void Config::configure(std::string configFilePath) {
-    std::filesystem::path defaultConfigPath = std::filesystem::current_path() / "tdfs/src/utils/config/standard_config.xml";
+    std::filesystem::path defaultConfigPath = std::filesystem::current_path() / "tdfs/src/utils/config/default_config.xml";
     pugi::xml_parse_result result = defaultConfigDocument.load_file(defaultConfigPath.c_str());
     if (!result) {
-      throw std::invalid_argument("Error while loading standard config");
+      throw std::invalid_argument("Error while loading default config");
     }
 
     std::filesystem::path configPath = getTdfsConfigDir();

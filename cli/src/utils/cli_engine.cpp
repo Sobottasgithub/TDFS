@@ -8,10 +8,13 @@
 
 #include "tokenizer.h"
 #include "interpreter.h"
+#include "api_client.h"
 
 namespace tdfs::cli {
   CliEngine::CliEngine() {
     displayWelcomeMessage();
+
+    ApiClient apiClient;
 
     char* query;
     bool queryCycle = true;
@@ -28,7 +31,10 @@ namespace tdfs::cli {
         queryCycle = false;
         std::cout << "terminated" << std::endl;
       } else if (!stringQuery.compare("c")) {
-        // TODO: connect to tdfs server
+        char* ipV4 = ::readline("Ip > ");
+        char* charPort = ::readline("Port > ");
+        int port = std::stoi(charPort);
+        apiClient.connect(ipV4, port);
       } else {
         try {
           tokenizer::GenericCommand genericCommand = tokenizer::tokenize(stringQuery);

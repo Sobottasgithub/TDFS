@@ -50,6 +50,14 @@ namespace tdfs {
   bool Config::getConfigIsNameNode() {
     return getBoolValueFromConfig("/configuration/property[name='name.node']/value");
   }
+
+  std::string Config::getConfigTcpServerIp() {
+    return getStringValueFromConfig("/configuration/property[name='tcp.server.ip']/value");
+  }
+
+  int Config::getConfigTcpServerPort() {
+    return getIntValueFromConfig("/configuration/property[name='tcp.server.port']/value");
+  }
  
   void Config::loadFile(std::filesystem::path path) {
     pugi::xml_parse_result result = configDocument.load_file(path.c_str());
@@ -98,6 +106,15 @@ namespace tdfs {
     pugi::xpath_node value = configDocument.select_node(key.c_str());
     if (value) {
       return value.node().text().as_int();
+    } else {
+      throw std::invalid_argument(key + " has no value");
+    }
+  }
+
+  std::string Config::getStringValueFromConfig(std::string key) {
+    pugi::xpath_node value = configDocument.select_node(key.c_str());
+    if (value) {
+      return value.node().child_value();
     } else {
       throw std::invalid_argument(key + " has no value");
     }

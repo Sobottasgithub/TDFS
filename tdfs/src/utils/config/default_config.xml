@@ -29,4 +29,14 @@
     <name>name.node</name>
     <value>false</value>
   </property>
+
+  <property>
+    <name>tcp.server.ip</name>
+    <value></value>
+  </property>
+
+  <property>
+    <name>tcp.server.port</name>
+    <value></value>
+  </property>
 </configuration>

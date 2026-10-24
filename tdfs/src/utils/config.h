@@ -23,6 +23,10 @@ namespace tdfs {
       std::vector<std::filesystem::path> getConfigDataDir();
       bool getConfigIsFloatingNode();
       bool getConfigIsNameNode();
+      std::string getConfigTcpServerIp();
+      int getConfigTcpServerPort();
+
+      std::filesystem::path getTdfsConfigDir();
       
     private:
       pugi::xml_document defaultConfigDocument;
@@ -34,11 +38,11 @@ namespace tdfs {
       void verifyConfig();
 
       int getIntValueFromConfig(std::string key);
+      std::string getStringValueFromConfig(std::string key);
       bool getBoolValueFromConfig(std::string key);
       std::filesystem::path getPathValueFromConfig(std::string key);
       std::vector<std::filesystem::path> getPathValuesFromConfig(std::string key);
 
-      std::filesystem::path getTdfsConfigDir();
       std::filesystem::path getConfigDir();
   };
 }

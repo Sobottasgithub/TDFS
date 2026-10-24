@@ -25,6 +25,9 @@ int main(int argc, char *argv[]) {
     std::cout << "CDD: " << s1.getConfigDataDir().at(0) << std::endl;
     std::cout << "IFN: " << s1.getConfigIsFloatingNode() << std::endl;
     std::cout << "INN: " << s1.getConfigIsNameNode() << std::endl;
+    std::cout << "TSI: " << s1.getConfigTcpServerIp() << std::endl;
+    std::cout << "TSP: " << s1.getConfigTcpServerPort() << std::endl;
+    std::cout << "CONFIG DIR: " << s1.getTdfsConfigDir() << std::endl;
 
     return 0;
 }

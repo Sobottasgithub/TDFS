@@ -9,11 +9,12 @@ namespace tdfs {
       ApiServer(std::string interface, int port);
 
       void acceptClientSession();
-      static void clientManager(int serverSocket, int clientSocket);
       
     private:
       int port;
       const char *ipV4;
+
+      static void clientManager(int serverSocket, int clientSocket);
   };
 }
 

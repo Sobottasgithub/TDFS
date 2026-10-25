@@ -23,7 +23,7 @@ namespace tdfs {
       std::vector<std::filesystem::path> getConfigDataDir();
       bool getConfigIsFloatingNode();
       bool getConfigIsNameNode();
-      std::string getConfigTcpServerIp();
+      std::string getConfigTcpServerInterface();
       int getConfigTcpServerPort();
 
       std::filesystem::path getTdfsConfigDir();

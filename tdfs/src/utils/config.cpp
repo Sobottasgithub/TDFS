@@ -51,8 +51,8 @@ namespace tdfs {
     return getBoolValueFromConfig("/configuration/property[name='name.node']/value");
   }
 
-  std::string Config::getConfigTcpServerIp() {
-    return getStringValueFromConfig("/configuration/property[name='tcp.server.ip']/value");
+  std::string Config::getConfigTcpServerInterface() {
+    return getStringValueFromConfig("/configuration/property[name='tcp.server.interface']/value");
   }
 
   int Config::getConfigTcpServerPort() {

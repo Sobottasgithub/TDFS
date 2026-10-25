@@ -8,13 +8,10 @@
 
 #include "tokenizer.h"
 #include "interpreter.h"
-#include "api_client.h"
 
 namespace tdfs::cli {
   CliEngine::CliEngine() {
     displayWelcomeMessage();
-
-    ApiClient apiClient;
 
     char* query;
     bool queryCycle = true;
@@ -31,10 +28,7 @@ namespace tdfs::cli {
         queryCycle = false;
         std::cout << "terminated" << std::endl;
       } else if (!stringQuery.compare("c")) {
-        char* ipV4 = ::readline("Ip > ");
-        char* charPort = ::readline("Port > ");
-        int port = std::stoi(charPort);
-        apiClient.connect(ipV4, port);
+        connect();
       } else {
         try {
           tokenizer::GenericCommand genericCommand = tokenizer::tokenize(stringQuery);
@@ -44,6 +38,33 @@ namespace tdfs::cli {
         }
       }
     }
+  }
+
+  void CliEngine::connect() {
+    if (this->apiClient.isConnected()) {
+      std::cout << "You are connected to: " << this->apiClient.getIp() << std::endl;
+      std::string option = ::readline("(1) cancel\n(2) connect\n(3) disconnect\n choose: ");
+
+      if (!option.compare("1")) {
+        return;
+      } else if (!option.compare("2")) {
+        this->apiClient.disconnect();
+        connectToTdfs();
+      } else if (!option.compare("3")) {
+        this->apiClient.disconnect();
+      } else {
+        std::cout << "Unknown action!" << std::endl;
+      }
+      return;
+    }
+    connectToTdfs();
+  }
+
+  void CliEngine::connectToTdfs() {
+    char* ipV4 = ::readline("Ip > ");
+    char* charPort = ::readline("Port > ");
+    int port = std::stoi(charPort);
+    this->apiClient.connect(ipV4, port);
   }
 
   void CliEngine::displayWelcomeMessage() {
@@ -63,5 +84,6 @@ namespace tdfs::cli {
     // the first real commands are implemented
     std::cout << "---- TDFS commands ----" << std::endl;
     std::cout << "Quit: q" << std::endl;
+    std::cout << "Connect: c" << std::endl;
   }
 }

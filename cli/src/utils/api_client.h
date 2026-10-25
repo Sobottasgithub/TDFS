@@ -10,10 +10,18 @@ namespace tdfs::cli {
     public:
       ApiClient();
       bool connect(std::string ipV4, int port);
+      bool isConnected();
+      void disconnect();
+
+      std::string getIp();
+      int getPort();
       
     private:
       std::shared_ptr<ttp2::ClientSessionController> clientSessionController;
       std::thread clientNetworkThread;
+
+      std::string ipV4 = "";
+      int port = 0;
   };
 }
 

@@ -11,8 +11,37 @@ namespace tdfs::cli {
     std::thread networkThread([clientSessionController]() {
         clientSessionController->networkingSession();
     });
-    this->clientNetworkThread = std::move(networkThread);
+    networkThread.detach();
 
+    this->ipV4 = ipV4;
+    this->port = port;
+    
     return true;
+  }
+
+  bool ApiClient::isConnected() {
+    if (this->clientSessionController != nullptr && this->clientSessionController->isConnected()) {
+      return true;
+    }
+    return false;
+  }
+
+  void ApiClient::disconnect() {
+    if (isConnected()) {
+      this->clientSessionController->disconnect();
+
+      this->ipV4 = "";
+      this->port = 0;
+
+      this->clientSessionController = nullptr;
+    }
+  }
+
+  std::string ApiClient::getIp() {
+    return this->ipV4;
+  }
+
+  int ApiClient::getPort() {
+    return this->port;
   }
 }

@@ -10,28 +10,27 @@
 int main(int argc, char *argv[]) {
     std::cout << "TDFS!" << std::endl;
 
-    tdfs::Config& s1 = tdfs::Config::getInstance();
-    std::cout << &s1 << std::endl;
+    tdfs::Config& config = tdfs::Config::getInstance();
 
     tdfs::ArgsInterpreter argsInterpreter(argc, argv);
     std::vector<std::string> configPathResult = argsInterpreter.getArg("-c", 1);
     if (configPathResult.size() > 0) {
-        s1.configure(configPathResult.at(0));
+        config.configure(configPathResult.at(0));
     } else {
-        s1.configure();
+        config.configure();
     }
     
-    std::cout << "R:   " << s1.getConfigReplications() << std::endl;
-    std::cout << "BS:  " << s1.getConfigBlocksize() << std::endl;
-    std::cout << "CND: " << s1.getConfigNameDir() << std::endl;
-    std::cout << "CDD: " << s1.getConfigDataDir().at(0) << std::endl;
-    std::cout << "IFN: " << s1.getConfigIsFloatingNode() << std::endl;
-    std::cout << "INN: " << s1.getConfigIsNameNode() << std::endl;
-    std::cout << "TSI: " << s1.getConfigTcpServerInterface() << std::endl;
-    std::cout << "TSP: " << s1.getConfigTcpServerPort() << std::endl;
-    std::cout << "CONFIG DIR: " << s1.getTdfsConfigDir() << std::endl;
+    std::cout << "R:   " << config.getConfigReplications() << std::endl;
+    std::cout << "BS:  " << config.getConfigBlocksize() << std::endl;
+    std::cout << "CND: " << config.getConfigNameDir() << std::endl;
+    std::cout << "CDD: " << config.getConfigDataDir().at(0) << std::endl;
+    std::cout << "IFN: " << config.getConfigIsFloatingNode() << std::endl;
+    std::cout << "INN: " << config.getConfigIsNameNode() << std::endl;
+    std::cout << "TSI: " << config.getConfigTcpServerInterface() << std::endl;
+    std::cout << "TSP: " << config.getConfigTcpServerPort() << std::endl;
+    std::cout << "CONFIG DIR: " << config.getTdfsConfigDir() << std::endl;
 
-    tdfs::ApiServer apiServer(s1.getConfigTcpServerInterface(), s1.getConfigTcpServerPort());
+    tdfs::ApiServer apiServer(config.getConfigTcpServerInterface(), config.getConfigTcpServerPort());
     std::thread apiServerThread([&apiServer]() {
         apiServer.acceptClientSession();
     });

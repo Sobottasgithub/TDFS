@@ -5,6 +5,7 @@
 #include "utils/api_server.h"
 
 #include <vector>
+#include <thread>
 
 int main(int argc, char *argv[]) {
     std::cout << "TDFS!" << std::endl;
@@ -31,7 +32,13 @@ int main(int argc, char *argv[]) {
     std::cout << "CONFIG DIR: " << s1.getTdfsConfigDir() << std::endl;
 
     tdfs::ApiServer apiServer(s1.getConfigTcpServerInterface(), s1.getConfigTcpServerPort());
-    apiServer.acceptClientSession();
+    std::thread apiServerThread([&apiServer]() {
+        apiServer.acceptClientSession();
+    });
+
+    if (apiServerThread.joinable()) {
+        apiServerThread.join();
+    }
 
     return 0;
 }

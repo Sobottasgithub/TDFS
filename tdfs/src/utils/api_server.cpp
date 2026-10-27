@@ -32,12 +32,12 @@ namespace tdfs {
       while (serverSessionController->isConnected()) {
           if (serverSessionController->hasRequest()) {
               ttp2::Packet::Packet packet = serverSessionController->popRequest();
-              std::wcout << "Received packet id: " << packet.id << std::endl;
+              std::cout << "Received packet id: " << packet.id << std::endl;
               serverSessionController->pushResponse(packet);
           }
       }
 
-      std::wcout << "Terminated!" << std::endl;
+      std::cout << "Terminated!" << std::endl;
       networkingSession.detach();    
   }
 
@@ -57,7 +57,7 @@ namespace tdfs {
     // Create epoll
     int epollFd = epoll_create1(0);
     if (epollFd == -1) {
-        std::wcout << "Failed to create epoll!" << std::endl;
+        std::cout << "Failed to create epoll!" << std::endl;
     }
     // Set epoll action for server
     struct epoll_event serverEvents;
@@ -78,7 +78,7 @@ namespace tdfs {
         for (int index = 0; index < epollRequestCount; ++index) {
             if (events[index].data.fd == serverSocket) {
                 int clientSocket = accept4(serverSocket, nullptr, nullptr, SOCK_NONBLOCK);
-                std::wcout << "New clientSocket: " << clientSocket << std::endl;
+                std::cout << "New clientSocket: " << clientSocket << std::endl;
 
                 clientConnections.push_back(std::thread(
                                                clientManager,

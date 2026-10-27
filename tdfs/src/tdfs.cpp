@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "utils/config.h"
+#include "utils/config/config.h"
 #include "utils/args_interpreter.h"
 #include "utils/api_server.h"
 

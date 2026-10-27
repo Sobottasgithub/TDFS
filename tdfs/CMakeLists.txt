@@ -13,7 +13,6 @@ find_package(pugixml REQUIRED)
 
 add_executable(tdfs ${SOURCES})
 
-target_link_libraries(tdfs PRIVATE networkmanager)
 target_link_libraries(tdfs PRIVATE tablog)
 target_link_libraries(tdfs PRIVATE ttp2)
 target_link_libraries(tdfs PRIVATE tud)

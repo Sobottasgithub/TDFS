@@ -16,7 +16,6 @@ target_link_directories(tdfs-cli PRIVATE ${READLINE_LIBRARY_DIRS})
 
 target_link_libraries(tdfs-cli PRIVATE 
     ${READLINE_LIBRARIES}
-    networkmanager
     tablog
     ttp2
 )

@@ -66,7 +66,7 @@
           configurePhase = ''
             cmake -B build -S $src \
               -DCMAKE_BUILD_TYPE=Release \
-              -DDEF_NETWORKMANAGER=${if enableLib then "ON" else "OFF"} \
+              -DDEF_LIB=${if enableLib then "ON" else "OFF"} \
               -DDEF_TDFS=${if enableTdfs then "ON" else "OFF"} \
               -DDEF_CLI=${if enableCli then "ON" else "OFF"}
           '';
@@ -88,26 +88,26 @@
       packages.${system} =
         let
           lib = mkTdfsPackage {
-            pname = "libnetworkmanager";
-            buildTarget = "networkmanager";
-            enableLib = true;
+            pname = "";
+            buildTarget = "";
+            enableLib = false;
           };
         in
         {
-          inherit lib libtablog;
+          inherit libtablog;
 
           tdfs = mkTdfsPackage {
             pname = "tdfs";
             buildTarget = "tdfs";
             enableTdfs = true;
-            extraInputs = [ lib ];
+            extraInputs = [ ];
           };
 
           cli = mkTdfsPackage {
             pname = "tdfs-cli";
             buildTarget = "tdfs-cli";
             enableCli = true;
-            extraInputs = [ lib ];
+            extraInputs = [ ];
           };
 
           default = self.packages.${system}.lib;

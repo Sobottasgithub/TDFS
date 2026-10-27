@@ -4,12 +4,12 @@ project(tdfs)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(DEF_NETWORKMANAGER "configure networking lib" ON)
+option(DEF_LIB "configure lib" ON)
 option(DEF_TDFS "configure tdfs" ON)
 option(DEF_CLI "configure tdfs cli" ON)
 
-if (DEF_NETWORKMANAGER)
-    add_subdirectory(lib/libnetworkmanager)
+if (DEF_LIB)
+    add_subdirectory(lib/)
 endif()
 
 if(DEF_TDFS)

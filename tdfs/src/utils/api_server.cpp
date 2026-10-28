@@ -1,6 +1,5 @@
 #include "api_server.h"
 
-#include <iostream>
 #include <string>
 #include <tablog.h>
 #include <thread>

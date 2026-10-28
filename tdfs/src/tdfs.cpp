@@ -1,6 +1,7 @@
 #include "utils/config/config.h"
 #include "utils/args_interpreter.h"
 #include "utils/api_server.h"
+#include "utils/name_server.h"
 
 #include <string>
 #include <vector>
@@ -35,11 +36,15 @@ int main(int argc, char *argv[]) {
     logger->log(tablog::DEBUG, "TSP: " + std::to_string(config.getConfigTcpServerPort()));
     logger->log(tablog::DEBUG, "CONFIG DIR: " + config.getTdfsConfigDir().string());
 
-    tdfs::ApiServer apiServer(config.getConfigTcpServerInterface(), config.getConfigTcpServerPort());
-    std::thread apiServerThread([&apiServer]() {
+    std::string interface = config.getConfigTcpServerInterface();
+    int port = config.getConfigTcpServerPort();
+    std::thread apiServerThread([interface, port]() {
+        tdfs::ApiServer apiServer(interface, port);
         apiServer.acceptClientSession();
     });
-
+    
+    tdfs::NameServer nameServer;
+    
     if (apiServerThread.joinable()) {
         apiServerThread.join();
     }

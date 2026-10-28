@@ -17,13 +17,13 @@ namespace tdfs {
 
       void configure(std::string configFilePath = "");
 
-      int getConfigReplications();
-      int getConfigBlocksize();
-      std::filesystem::path getConfigNameDir();
-      std::vector<std::filesystem::path> getConfigDataDir();
-      bool getConfigIsFloatingNode();
-      bool getConfigIsNameNode();
-      std::string getConfigTcpServerInterface();
+      int getReplications();
+      int getBlocksize();
+      std::filesystem::path getNameDir();
+      std::vector<std::filesystem::path> getDataDir();
+      bool getIsFloatingNode();
+      bool getIsNameNode();
+      std::string getTcpServerInterface();
       int getConfigTcpServerPort();
 
       std::filesystem::path getTdfsConfigDir();

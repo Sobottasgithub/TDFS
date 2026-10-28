@@ -26,24 +26,24 @@ int main(int argc, char *argv[]) {
         config.configure();
     }
     
-    logger->log(tablog::DEBUG, "R:   " + std::to_string(config.getConfigReplications()));
-    logger->log(tablog::DEBUG, "BS:  " + std::to_string(config.getConfigBlocksize()));
-    logger->log(tablog::DEBUG, "CND: " + config.getConfigNameDir().string());
-    logger->log(tablog::DEBUG, "CDD: " + config.getConfigDataDir().at(0).string());
-    logger->log(tablog::DEBUG, "IFN: " + std::to_string(config.getConfigIsFloatingNode()));
-    logger->log(tablog::DEBUG, "INN: " + std::to_string(config.getConfigIsNameNode()));
-    logger->log(tablog::DEBUG, "TSI: " + config.getConfigTcpServerInterface());
+    logger->log(tablog::DEBUG, "R:   " + std::to_string(config.getReplications()));
+    logger->log(tablog::DEBUG, "BS:  " + std::to_string(config.getBlocksize()));
+    logger->log(tablog::DEBUG, "CND: " + config.getNameDir().string());
+    logger->log(tablog::DEBUG, "CDD: " + config.getDataDir().at(0).string());
+    logger->log(tablog::DEBUG, "IFN: " + std::to_string(config.getIsFloatingNode()));
+    logger->log(tablog::DEBUG, "INN: " + std::to_string(config.getIsNameNode()));
+    logger->log(tablog::DEBUG, "TSI: " + config.getTcpServerInterface());
     logger->log(tablog::DEBUG, "TSP: " + std::to_string(config.getConfigTcpServerPort()));
     logger->log(tablog::DEBUG, "CONFIG DIR: " + config.getTdfsConfigDir().string());
 
-    std::string interface = config.getConfigTcpServerInterface();
+    std::string interface = config.getTcpServerInterface();
     int port = config.getConfigTcpServerPort();
     std::thread apiServerThread([interface, port]() {
         tdfs::ApiServer apiServer(interface, port);
     });
 
     std::thread nameServerThread;
-    if (config.getConfigIsNameNode()) {
+    if (config.getIsNameNode()) {
         nameServerThread = std::thread([]() {
             tdfs::NameServer nameServer;  
         });

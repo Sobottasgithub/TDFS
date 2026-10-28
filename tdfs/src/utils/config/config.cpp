@@ -27,31 +27,31 @@ namespace tdfs {
     }
   }
 
-  int Config::getConfigReplications() {
+  int Config::getReplications() {
     return getIntValueFromConfig("/configuration/property[name='replications']/value");
   }
 
-  int Config::getConfigBlocksize() {
+  int Config::getBlocksize() {
     return getIntValueFromConfig("/configuration/property[name='blocksize']/value");
   }
   
-  std::filesystem::path Config::getConfigNameDir() {
+  std::filesystem::path Config::getNameDir() {
     return getPathValueFromConfig("/configuration/property[name='name.directory']/value");
   }
 
-  std::vector<std::filesystem::path> Config::getConfigDataDir() {
+  std::vector<std::filesystem::path> Config::getDataDir() {
     return getPathValuesFromConfig("/configuration/property[name='data.directory']/value");
   }
 
-  bool Config::getConfigIsFloatingNode() {
+  bool Config::getIsFloatingNode() {
     return getBoolValueFromConfig("/configuration/property[name='floating.node']/value");
   }
   
-  bool Config::getConfigIsNameNode() {
+  bool Config::getIsNameNode() {
     return getBoolValueFromConfig("/configuration/property[name='name.node']/value");
   }
 
-  std::string Config::getConfigTcpServerInterface() {
+  std::string Config::getTcpServerInterface() {
     return getStringValueFromConfig("/configuration/property[name='tcp.server.interface']/value");
   }
 

@@ -1,15 +1,20 @@
-#include <iostream>
-
 #include "utils/config/config.h"
 #include "utils/args_interpreter.h"
 #include "utils/api_server.h"
 
+#include <string>
 #include <vector>
 #include <thread>
 
-int main(int argc, char *argv[]) {
-    std::cout << "TDFS!" << std::endl;
+#include <tablog.h>
+#include <tablog_registry.h>
 
+int main(int argc, char *argv[]) {
+    tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
+    std::shared_ptr<tablog::Tablog> logger = std::make_shared<tablog::Tablog>();
+    logger->configure("TDFS", true);
+    registry->registerLogger("TDFS", logger);
+    
     tdfs::Config& config = tdfs::Config::getInstance();
 
     tdfs::ArgsInterpreter argsInterpreter(argc, argv);
@@ -20,15 +25,15 @@ int main(int argc, char *argv[]) {
         config.configure();
     }
     
-    std::cout << "R:   " << config.getConfigReplications() << std::endl;
-    std::cout << "BS:  " << config.getConfigBlocksize() << std::endl;
-    std::cout << "CND: " << config.getConfigNameDir() << std::endl;
-    std::cout << "CDD: " << config.getConfigDataDir().at(0) << std::endl;
-    std::cout << "IFN: " << config.getConfigIsFloatingNode() << std::endl;
-    std::cout << "INN: " << config.getConfigIsNameNode() << std::endl;
-    std::cout << "TSI: " << config.getConfigTcpServerInterface() << std::endl;
-    std::cout << "TSP: " << config.getConfigTcpServerPort() << std::endl;
-    std::cout << "CONFIG DIR: " << config.getTdfsConfigDir() << std::endl;
+    logger->log(tablog::DEBUG, "R:   " + std::to_string(config.getConfigReplications()));
+    logger->log(tablog::DEBUG, "BS:  " + std::to_string(config.getConfigBlocksize()));
+    logger->log(tablog::DEBUG, "CND: " + config.getConfigNameDir().string());
+    logger->log(tablog::DEBUG, "CDD: " + config.getConfigDataDir().at(0).string());
+    logger->log(tablog::DEBUG, "IFN: " + std::to_string(config.getConfigIsFloatingNode()));
+    logger->log(tablog::DEBUG, "INN: " + std::to_string(config.getConfigIsNameNode()));
+    logger->log(tablog::DEBUG, "TSI: " + config.getConfigTcpServerInterface());
+    logger->log(tablog::DEBUG, "TSP: " + std::to_string(config.getConfigTcpServerPort()));
+    logger->log(tablog::DEBUG, "CONFIG DIR: " + config.getTdfsConfigDir().string());
 
     tdfs::ApiServer apiServer(config.getConfigTcpServerInterface(), config.getConfigTcpServerPort());
     std::thread apiServerThread([&apiServer]() {

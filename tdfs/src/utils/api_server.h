@@ -2,6 +2,9 @@
 #define API_SERVER_H
 
 #include <string>
+#include <memory>
+
+#include <tablog.h>
 
 namespace tdfs {
   class ApiServer {
@@ -11,10 +14,12 @@ namespace tdfs {
       void acceptClientSession();
       
     private:
+      std::shared_ptr<tablog::Tablog> logger;
+      
       int port;
       const char *ipV4;
 
-      static void clientManager(int serverSocket, int clientSocket);
+      void clientManager(int serverSocket, int clientSocket);
   };
 }
 

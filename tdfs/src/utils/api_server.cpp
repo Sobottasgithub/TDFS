@@ -1,6 +1,8 @@
 #include "api_server.h"
 
 #include <iostream>
+#include <string>
+#include <tablog.h>
 #include <thread>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -10,10 +12,15 @@
 #include <server_session_controller.h>
 #include <packet_types.h>
 
+#include <tablog_registry.h>
+
 namespace tdfs {
   ApiServer::ApiServer(std::string interface, int port) {
+    tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
+    this->logger = registry->get("TDFS");
+
     if (!ttp2::ServerSessionController::isValidInterface(interface)) {
-        std::cout << "Please provide a correct interface" << std::endl;
+        this->logger->log(tablog::ERROR, "Please provide a correct interface");
         return;
     }
 
@@ -32,12 +39,12 @@ namespace tdfs {
       while (serverSessionController->isConnected()) {
           if (serverSessionController->hasRequest()) {
               ttp2::Packet::Packet packet = serverSessionController->popRequest();
-              std::cout << "Received packet id: " << packet.id << std::endl;
+              this->logger->log(tablog::DEBUG, "Received packet id: " + std::to_string(packet.id));
               serverSessionController->pushResponse(packet);
           }
       }
 
-      std::cout << "Terminated!" << std::endl;
+      this->logger->log(tablog::INFO, "Terminated!");
       networkingSession.detach();    
   }
 
@@ -50,21 +57,21 @@ namespace tdfs {
 
     int serverSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     if(bind(serverSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0) {
-        std::cout << "Bind failed!" << std::endl;
+        this->logger->log(tablog::ERROR, "Bind failed!");
         return;
     }
 
     // Create epoll
     int epollFd = epoll_create1(0);
     if (epollFd == -1) {
-        std::cout << "Failed to create epoll!" << std::endl;
+        this->logger->log(tablog::ERROR, "Failed to create epoll!");
     }
     // Set epoll action for server
     struct epoll_event serverEvents;
     serverEvents.events = EPOLLIN | EPOLLOUT;
     serverEvents.data.fd = serverSocket;
     if (epoll_ctl(epollFd, EPOLL_CTL_ADD, serverSocket, &serverEvents) == -1) {
-        std::cout << "Failed to set epoll_ctl!" << std::endl;
+        this->logger->log(tablog::ERROR, "Failed to set epoll_ctl!");
         return;
     }
 
@@ -78,13 +85,11 @@ namespace tdfs {
         for (int index = 0; index < epollRequestCount; ++index) {
             if (events[index].data.fd == serverSocket) {
                 int clientSocket = accept4(serverSocket, nullptr, nullptr, SOCK_NONBLOCK);
-                std::cout << "New clientSocket: " << clientSocket << std::endl;
+                this->logger->log(tablog::INFO, "New clientSocket: " + std::to_string(clientSocket));
 
-                clientConnections.push_back(std::thread(
-                                               clientManager,
-                                               serverSocket,
-                                               clientSocket
-                                            ));
+                clientConnections.push_back(std::thread([this, serverSocket, clientSocket]() {
+                    this->clientManager(serverSocket, clientSocket);
+                }));
             }
         }
     }

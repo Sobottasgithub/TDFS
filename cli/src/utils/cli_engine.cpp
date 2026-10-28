@@ -61,8 +61,8 @@ namespace tdfs::cli {
   }
 
   void CliEngine::connectToTdfs() {
-    char* ipV4 = ::readline("Ip > ");
-    char* charPort = ::readline("Port > ");
+    char* ipV4 = ::readline(" Ip: ");
+    char* charPort = ::readline(" Port: ");
     int port = std::stoi(charPort);
     this->apiClient.connect(ipV4, port);
   }

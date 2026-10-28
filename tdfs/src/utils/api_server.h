@@ -10,14 +10,9 @@ namespace tdfs {
   class ApiServer {
     public:
       ApiServer(std::string interface, int port);
-
-      void acceptClientSession();
       
     private:
       std::shared_ptr<tablog::Tablog> logger;
-      
-      int port;
-      const char *ipV4;
 
       void clientManager(int serverSocket, int clientSocket);
   };

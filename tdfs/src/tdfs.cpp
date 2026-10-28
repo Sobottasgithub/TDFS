@@ -40,7 +40,6 @@ int main(int argc, char *argv[]) {
     int port = config.getConfigTcpServerPort();
     std::thread apiServerThread([interface, port]() {
         tdfs::ApiServer apiServer(interface, port);
-        apiServer.acceptClientSession();
     });
 
     std::thread nameServerThread;

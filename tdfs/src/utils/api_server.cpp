@@ -24,35 +24,10 @@ namespace tdfs {
     }
 
     std::string ip = ttp2::ServerSessionController::getLocalIpAddress(interface);
-    this->ipV4 = ip.c_str();
-    this->port = port;
-  }
-
-  void ApiServer::clientManager(int serverSocket, int clientSocket) {
-      auto serverSessionController = std::make_shared<ttp2::ServerSessionController>(serverSocket, clientSocket);
-
-      std::thread networkingSession([serverSessionController]() {
-          serverSessionController->networkingSession();
-      });
-
-      while (serverSessionController->isConnected()) {
-          if (serverSessionController->hasRequest()) {
-              ttp2::Packet::Packet packet = serverSessionController->popRequest();
-              this->logger->log(tablog::DEBUG, "Received packet id: " + std::to_string(packet.id));
-              serverSessionController->pushResponse(packet);
-          }
-      }
-
-      this->logger->log(tablog::INFO, "Terminated!");
-      networkingSession.detach();    
-  }
-
-
-  void ApiServer::acceptClientSession() {
     sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
-    serverAddress.sin_port = htons(this->port);
-    serverAddress.sin_addr.s_addr = inet_addr(this->ipV4);
+    serverAddress.sin_port = htons(port);
+    serverAddress.sin_addr.s_addr = inet_addr(ip.c_str());
 
     int serverSocket = socket(AF_INET, SOCK_STREAM | SOCK_NONBLOCK, 0);
     if(bind(serverSocket, (struct sockaddr *)&serverAddress, sizeof(serverAddress)) < 0) {
@@ -92,5 +67,24 @@ namespace tdfs {
             }
         }
     }
+  }
+  
+  void ApiServer::clientManager(int serverSocket, int clientSocket) {
+      auto serverSessionController = std::make_shared<ttp2::ServerSessionController>(serverSocket, clientSocket);
+
+      std::thread networkingSession([serverSessionController]() {
+          serverSessionController->networkingSession();
+      });
+
+      while (serverSessionController->isConnected()) {
+          if (serverSessionController->hasRequest()) {
+              ttp2::Packet::Packet packet = serverSessionController->popRequest();
+              this->logger->log(tablog::DEBUG, "Received packet id: " + std::to_string(packet.id));
+              serverSessionController->pushResponse(packet);
+          }
+      }
+
+      this->logger->log(tablog::INFO, "Terminated!");
+      networkingSession.detach();    
   }
 }

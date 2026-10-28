@@ -42,8 +42,17 @@ int main(int argc, char *argv[]) {
         tdfs::ApiServer apiServer(interface, port);
         apiServer.acceptClientSession();
     });
-    
-    tdfs::NameServer nameServer;
+
+    std::thread nameServerThread;
+    if (config.getConfigIsNameNode()) {
+        nameServerThread = std::thread([]() {
+            tdfs::NameServer nameServer;  
+        });
+    }
+
+    if (nameServerThread.joinable()) {
+        nameServerThread.join();
+    }
     
     if (apiServerThread.joinable()) {
         apiServerThread.join();

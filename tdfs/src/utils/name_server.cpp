@@ -1,6 +1,5 @@
 #include "name_server.h"
 
-#include <tablog.h>
 #include <tablog_registry.h>
 
 namespace tdfs {

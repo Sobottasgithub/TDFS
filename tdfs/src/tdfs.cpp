@@ -2,6 +2,7 @@
 #include "utils/args_interpreter.h"
 #include "utils/api_server.h"
 #include "utils/name_server.h"
+#include "utils/floating_node.h"
 
 #include <string>
 #include <vector>
@@ -47,6 +48,20 @@ int main(int argc, char *argv[]) {
         nameServerThread = std::thread([]() {
             tdfs::NameServer nameServer;  
         });
+    }
+
+    std::thread computeThread;
+    if (config.getIsFloatingNode()) {
+        computeThread = std::thread([]() {
+            tdfs::FloatingNode floatingNode;  
+        });
+    } else {
+        // TODO: implement compute node
+        // also uses compute Thread
+    }
+
+    if (computeThread.joinable()) {
+        computeThread.join();
     }
 
     if (nameServerThread.joinable()) {

@@ -111,6 +111,7 @@ namespace tdfs {
   }
 
   int Config::getIntValueFromConfig(std::string key) {
+    std::lock_guard<std::mutex> guard(this->configMutex);
     pugi::xpath_node value = configDocument.select_node(key.c_str());
     if (value) {
       return value.node().text().as_int();
@@ -120,6 +121,7 @@ namespace tdfs {
   }
 
   std::string Config::getStringValueFromConfig(std::string key) {
+    std::lock_guard<std::mutex> guard(this->configMutex);
     pugi::xpath_node value = configDocument.select_node(key.c_str());
     if (value) {
       return value.node().child_value();
@@ -129,6 +131,7 @@ namespace tdfs {
   }
 
   bool Config::getBoolValueFromConfig(std::string key) {
+    std::lock_guard<std::mutex> guard(this->configMutex);
     pugi::xpath_node value = configDocument.select_node(key.c_str());
     if (value) {
       return value.node().text().as_bool();
@@ -138,6 +141,7 @@ namespace tdfs {
   }
 
   std::filesystem::path Config::getPathValueFromConfig(std::string key) {
+    std::lock_guard<std::mutex> guard(this->configMutex);
     pugi::xpath_node value = configDocument.select_node(key.c_str());
     if (value) {
       return std::filesystem::path(value.node().child_value());
@@ -147,6 +151,7 @@ namespace tdfs {
   }
 
   std::vector<std::filesystem::path> Config::getPathValuesFromConfig(std::string key) {
+    std::lock_guard<std::mutex> guard(this->configMutex);
     std::vector<std::filesystem::path> paths;
     pugi::xpath_node_set dataDirNodes = configDocument.select_nodes(key.c_str());
     for (pugi::xpath_node dataDirNode : dataDirNodes) {
@@ -156,6 +161,7 @@ namespace tdfs {
   }
 
   std::filesystem::path Config::getTdfsConfigDir() {
+    std::lock_guard<std::mutex> guard(this->configMutex);
     std::filesystem::path tdfsConfigDir = getConfigDir() / "tdfs";
 
     if (!std::filesystem::exists(tdfsConfigDir)) {

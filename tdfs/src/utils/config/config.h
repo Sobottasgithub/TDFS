@@ -4,6 +4,7 @@
 #include <pugixml.hpp>
 #include <filesystem>
 #include <vector>
+#include <mutex>
 
 namespace tdfs {
   class Config {
@@ -31,6 +32,8 @@ namespace tdfs {
       std::filesystem::path getTdfsConfigDir();
       
     private:
+      std::mutex configMutex;
+
       pugi::xml_document defaultConfigDocument;
       pugi::xml_document configDocument;
 

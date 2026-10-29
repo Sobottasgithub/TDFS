@@ -55,8 +55,16 @@ namespace tdfs {
     return getStringValueFromConfig("/configuration/property[name='tcp.server.interface']/value");
   }
 
-  int Config::getConfigTcpServerPort() {
+  int Config::getTcpServerPort() {
     return getIntValueFromConfig("/configuration/property[name='tcp.server.port']/value");
+  }
+
+  std::string Config::getUdpDiscoveryInterface() {
+    return getStringValueFromConfig("/configuration/property[name='udp.discovery.interface']/value");
+  }
+
+  int Config::getUdpDiscoveryPort() {
+    return getIntValueFromConfig("/configuration/property[name='udp.discovery.port']/value");
   }
  
   void Config::loadFile(std::filesystem::path path) {

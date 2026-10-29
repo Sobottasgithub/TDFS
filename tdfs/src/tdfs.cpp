@@ -34,11 +34,13 @@ int main(int argc, char *argv[]) {
     logger->log(tablog::DEBUG, "IFN: " + std::to_string(config.getIsFloatingNode()));
     logger->log(tablog::DEBUG, "INN: " + std::to_string(config.getIsNameNode()));
     logger->log(tablog::DEBUG, "TSI: " + config.getTcpServerInterface());
-    logger->log(tablog::DEBUG, "TSP: " + std::to_string(config.getConfigTcpServerPort()));
+    logger->log(tablog::DEBUG, "TSP: " + std::to_string(config.getTcpServerPort()));
+    logger->log(tablog::DEBUG, "UDI: " + config.getUdpDiscoveryInterface());
+    logger->log(tablog::DEBUG, "UDP: " + std::to_string(config.getUdpDiscoveryPort()));
     logger->log(tablog::DEBUG, "CONFIG DIR: " + config.getTdfsConfigDir().string());
 
     std::string interface = config.getTcpServerInterface();
-    int port = config.getConfigTcpServerPort();
+    int port = config.getTcpServerPort();
     std::thread apiServerThread([interface, port]() {
         tdfs::ApiServer apiServer(interface, port);
     });

@@ -31,6 +31,16 @@
   </property>
 
   <property>
+    <name>udp.discovery.interface</name>
+    <value></value>
+  </property>
+
+  <property>
+    <name>udp.discovery.port</name>
+    <value></value>
+  </property>
+
+  <property>
     <name>tcp.server.interface</name>
     <value></value>
   </property>

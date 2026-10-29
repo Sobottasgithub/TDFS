@@ -24,7 +24,9 @@ namespace tdfs {
       bool getIsFloatingNode();
       bool getIsNameNode();
       std::string getTcpServerInterface();
-      int getConfigTcpServerPort();
+      int getTcpServerPort();
+      std::string getUdpDiscoveryInterface();
+      int getUdpDiscoveryPort();
 
       std::filesystem::path getTdfsConfigDir();
       

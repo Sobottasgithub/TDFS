@@ -1,5 +1,7 @@
 #include "floating_node.h"
 
+#include <thread>
+
 #include <tablog_registry.h>
 
 namespace tdfs {
@@ -8,5 +10,13 @@ namespace tdfs {
     this->logger = registry->get("TDFS");
 
     this->logger->log(tablog::DEBUG, "Init floating node");
+
+    std::thread discoveryThread([this]() {
+        udpDiscoverySession();
+    });
+
+    if (discoveryThread.joinable()) {
+      discoveryThread.join();
+    }
   }
 }

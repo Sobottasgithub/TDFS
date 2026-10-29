@@ -13,6 +13,14 @@ namespace tdfs {
     this->logger = registry->get("TDFS");
 
     this->logger->log(tablog::DEBUG, "Init nameServer");
+
+    std::thread discoveryThread([this]() {
+        udpDiscoverySession();
+    });
+
+    if (discoveryThread.joinable()) {
+      discoveryThread.join();
+    }    
   }
 
   void NameServer::udpDiscoverySession() {
@@ -24,5 +32,9 @@ namespace tdfs {
     std::thread serverDiscoveryThread([serverDiscovery]() {
       serverDiscovery->discoveryCycle();
     });
+
+    if (serverDiscoveryThread.joinable()) {
+      serverDiscoveryThread.join();
+    }
   }
 }

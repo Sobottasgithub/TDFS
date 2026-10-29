@@ -9,6 +9,8 @@ namespace tdfs {
   class ComputeCore {
     protected:
       std::shared_ptr<tablog::Tablog> logger;
+
+      void udpDiscoverySession(); 
   };
 }
 

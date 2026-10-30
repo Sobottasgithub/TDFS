@@ -1,5 +1,5 @@
 {
-  description = "Tablo Distributed File Server";
+  description = "Tablo Distributed File System";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";

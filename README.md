@@ -1,5 +1,5 @@
 # TDFS
-Tablo Distributed File Server
+Tablo Distributed File System
 run tdfs with:
 ```bash
 nix run .#tdfs

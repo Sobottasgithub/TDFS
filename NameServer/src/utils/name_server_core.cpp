@@ -1,4 +1,4 @@
-#include "name_server.h"
+#include "name_server_core.h"
 
 #include <server_discovery.h>
 #include <thread>

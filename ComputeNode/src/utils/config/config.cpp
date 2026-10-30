@@ -162,7 +162,7 @@ namespace tdfs {
 
   std::filesystem::path Config::getTdfsConfigDir() {
     std::lock_guard<std::mutex> guard(this->configMutex);
-    std::filesystem::path tdfsConfigDir = getConfigDir() / "tdfs";
+    std::filesystem::path tdfsConfigDir = getConfigDir() / "tdfs/compute";
 
     if (!std::filesystem::exists(tdfsConfigDir)) {
       std::filesystem::create_directories(tdfsConfigDir);

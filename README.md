@@ -1,5 +1,6 @@
 # TDFS
 Tablo Distributed File System
+
 run name server with:
 ```bash
 nix run .#name-server

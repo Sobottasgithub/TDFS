@@ -1,5 +1,5 @@
-#ifndef NAME_SERVER_H
-#define NAME_SERVER_H
+#ifndef NAME_SERVER_CORE_H
+#define NAME_SERVER_CORE_H
 
 #include <memory>
 

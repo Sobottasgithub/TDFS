@@ -1,7 +1,6 @@
 #include "utils/config/config.h"
 #include "utils/args_interpreter.h"
 #include "utils/api_server.h"
-#include "utils/name_server.h"
 #include "utils/floating_node.h"
 
 #include <string>
@@ -29,10 +28,8 @@ int main(int argc, char *argv[]) {
     
     logger->log(tablog::DEBUG, "R:   " + std::to_string(config.getReplications()));
     logger->log(tablog::DEBUG, "BS:  " + std::to_string(config.getBlocksize()));
-    logger->log(tablog::DEBUG, "CND: " + config.getNameDir().string());
     logger->log(tablog::DEBUG, "CDD: " + config.getDataDir().at(0).string());
     logger->log(tablog::DEBUG, "IFN: " + std::to_string(config.getIsFloatingNode()));
-    logger->log(tablog::DEBUG, "INN: " + std::to_string(config.getIsNameNode()));
     logger->log(tablog::DEBUG, "TSI: " + config.getTcpServerInterface());
     logger->log(tablog::DEBUG, "TSP: " + std::to_string(config.getTcpServerPort()));
     logger->log(tablog::DEBUG, "UDI: " + config.getUdpDiscoveryInterface());
@@ -44,13 +41,6 @@ int main(int argc, char *argv[]) {
     std::thread apiServerThread([interface, port]() {
         tdfs::ApiServer apiServer(interface, port);
     });
-
-    std::thread nameServerThread;
-    if (config.getIsNameNode()) {
-        nameServerThread = std::thread([]() {
-            tdfs::NameServer nameServer;  
-        });
-    }
 
     std::thread computeThread;
     if (config.getIsFloatingNode()) {
@@ -64,10 +54,6 @@ int main(int argc, char *argv[]) {
 
     if (computeThread.joinable()) {
         computeThread.join();
-    }
-
-    if (nameServerThread.joinable()) {
-        nameServerThread.join();
     }
     
     if (apiServerThread.joinable()) {

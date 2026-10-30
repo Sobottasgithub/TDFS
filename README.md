@@ -1,8 +1,13 @@
 # TDFS
 Tablo Distributed File System
-run tdfs with:
+run name server with:
 ```bash
-nix run .#tdfs
+nix run .#name-server
+```
+
+run compute node with:
+```bash
+nix run .#compute-node
 ```
 
 run cli with:

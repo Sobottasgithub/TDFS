@@ -53,8 +53,9 @@
           pname,
           buildTarget,
           enableLib ? false,
-          enableTdfs ? false,
+          enableNameServer ? false,
           enableCli ? false,
+          enableComputeNode ? false,
           extraInputs ? [ ],
         }:
         pkgs.stdenv.mkDerivation {
@@ -67,7 +68,8 @@
             cmake -B build -S $src \
               -DCMAKE_BUILD_TYPE=Release \
               -DDEF_LIB=${if enableLib then "ON" else "OFF"} \
-              -DDEF_TDFS=${if enableTdfs then "ON" else "OFF"} \
+              -DDEF_NAME_SERVER=${if enableNameServer then "ON" else "OFF"} \
+              -DDEF_COMPUTE_NODE=${if enableComputeNode then "ON" else "OFF"} \
               -DDEF_CLI=${if enableCli then "ON" else "OFF"}
           '';
 
@@ -96,10 +98,17 @@
         {
           inherit libtablog;
 
-          tdfs = mkTdfsPackage {
-            pname = "tdfs";
-            buildTarget = "tdfs";
-            enableTdfs = true;
+          name-server = mkTdfsPackage {
+            pname = "name-server";
+            buildTarget = "name-server";
+            enableNameServer = true;
+            extraInputs = [ ];
+          };
+
+          compute-node = mkTdfsPackage {
+            pname = "compute-node";
+            buildTarget = "compute-node";
+            enableComputeNode = true;
             extraInputs = [ ];
           };
 
@@ -110,7 +119,7 @@
             extraInputs = [ ];
           };
 
-          default = self.packages.${system}.lib;
+          default = self.packages.${system}.compute-node;
         };
 
       devShells.${system}.default = pkgs.mkShell {

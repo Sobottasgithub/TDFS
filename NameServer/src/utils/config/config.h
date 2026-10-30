@@ -21,11 +21,6 @@ namespace tdfs {
       int getReplications();
       int getBlocksize();
       std::filesystem::path getNameDir();
-      std::vector<std::filesystem::path> getDataDir();
-      bool getIsFloatingNode();
-      bool getIsNameNode();
-      std::string getTcpServerInterface();
-      int getTcpServerPort();
       std::string getUdpDiscoveryInterface();
       int getUdpDiscoveryPort();
 
@@ -40,7 +35,6 @@ namespace tdfs {
       Config() = default;
       
       void loadFile(std::filesystem::path path);
-      void verifyConfig();
 
       int getIntValueFromConfig(std::string key);
       std::string getStringValueFromConfig(std::string key);

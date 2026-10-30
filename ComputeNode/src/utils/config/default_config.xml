@@ -1,52 +1,16 @@
 <?xml version="1.0"?>
-<configuration>
-  <property>
-    <name>replications</name>
-    <value>2</value>
-  </property>
+<Configuration>
+  <DataDirectories></DataDirectories>
 
-  <property>
-    <name>blocksize</name>
-    <value>134217728</value>
-  </property>
+  <FloatingNode>false</FloatingNode>
 
-  <property>
-    <name>name.directory</name>
-    <value></value>
-  </property>
+  <UdpDiscovery>
+    <Interface></Interface>
+    <Port></Port>
+  </UdpDiscovery>
 
-  <property>
-    <name>data.directory</name>
-    <value></value>
-  </property>
-
-  <property>
-    <name>floating.node</name>
-    <value>false</value>
-  </property>
-
-  <property>
-    <name>name.node</name>
-    <value>false</value>
-  </property>
-
-  <property>
-    <name>udp.discovery.interface</name>
-    <value></value>
-  </property>
-
-  <property>
-    <name>udp.discovery.port</name>
-    <value></value>
-  </property>
-
-  <property>
-    <name>tcp.server.interface</name>
-    <value></value>
-  </property>
-
-  <property>
-    <name>tcp.server.port</name>
-    <value></value>
-  </property>
-</configuration>
+  <ApiServer>
+    <Interface></Interface>
+    <Port></Port>
+  </ApiServer>
+</Configuration>

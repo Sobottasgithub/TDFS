@@ -26,18 +26,15 @@ int main(int argc, char *argv[]) {
         config.configure();
     }
     
-    logger->log(tablog::DEBUG, "R:   " + std::to_string(config.getReplications()));
-    logger->log(tablog::DEBUG, "BS:  " + std::to_string(config.getBlocksize()));
-    logger->log(tablog::DEBUG, "CDD: " + config.getDataDir().at(0).string());
     logger->log(tablog::DEBUG, "IFN: " + std::to_string(config.getIsFloatingNode()));
-    logger->log(tablog::DEBUG, "TSI: " + config.getTcpServerInterface());
-    logger->log(tablog::DEBUG, "TSP: " + std::to_string(config.getTcpServerPort()));
+    logger->log(tablog::DEBUG, "TSI: " + config.getApiServerInterface());
+    logger->log(tablog::DEBUG, "TSP: " + std::to_string(config.getApiServerPort()));
     logger->log(tablog::DEBUG, "UDI: " + config.getUdpDiscoveryInterface());
     logger->log(tablog::DEBUG, "UDP: " + std::to_string(config.getUdpDiscoveryPort()));
     logger->log(tablog::DEBUG, "CONFIG DIR: " + config.getTdfsConfigDir().string());
 
-    std::string interface = config.getTcpServerInterface();
-    int port = config.getTcpServerPort();
+    std::string interface = config.getApiServerInterface();
+    int port = config.getApiServerPort();
     std::thread apiServerThread([interface, port]() {
         tdfs::ApiServer apiServer(interface, port);
     });

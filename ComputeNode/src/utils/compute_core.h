@@ -7,7 +7,10 @@
 
 namespace tdfs {
   class ComputeCore {
-    protected:
+    public:
+      ComputeCore();
+      
+    private:
       std::shared_ptr<tablog::Tablog> logger;
 
       void udpDiscoverySession(); 

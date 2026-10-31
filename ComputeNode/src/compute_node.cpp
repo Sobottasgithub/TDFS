@@ -1,7 +1,7 @@
 #include "utils/config/config.h"
 #include "utils/args_interpreter.h"
 #include "utils/api_server.h"
-#include "utils/floating_node.h"
+#include "utils/compute_core.h"
 
 #include <string>
 #include <vector>
@@ -42,11 +42,12 @@ int main(int argc, char *argv[]) {
     std::thread computeThread;
     if (config.getIsFloatingNode()) {
         computeThread = std::thread([]() {
-            tdfs::FloatingNode floatingNode;  
+            tdfs::ComputeCore computeCore;  
         });
     } else {
-        // TODO: implement compute node
-        // also uses compute Thread
+        computeThread = std::thread([]() {
+            tdfs::ComputeCore computeCore;  
+        });
     }
 
     if (computeThread.joinable()) {

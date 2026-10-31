@@ -6,7 +6,24 @@
 #include <thread>
 #include <algorithm>
 
+#include <tablog_registry.h>
+
 namespace tdfs {
+  ComputeCore::ComputeCore() {
+    tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
+    this->logger = registry->get("TDFS");
+
+    this->logger->log(tablog::DEBUG, "Init floating node");
+
+    std::thread discoveryThread([this]() {
+        udpDiscoverySession();
+    });
+
+    if (discoveryThread.joinable()) {
+      discoveryThread.join();
+    }
+  }
+
   void ComputeCore::udpDiscoverySession() {
     tdfs::Config& config = tdfs::Config::getInstance();
 

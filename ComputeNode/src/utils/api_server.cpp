@@ -77,11 +77,13 @@ namespace tdfs {
       });
 
       while (serverSessionController->isConnected()) {
-          if (serverSessionController->hasRequest()) {
-              ttp2::Packet::Packet packet = serverSessionController->popRequest();
-              this->logger->log(tablog::DEBUG, "Received packet id: " + std::to_string(packet.id));
-              serverSessionController->pushResponse(packet);
-          }
+        if (serverSessionController->hasRequest()) {
+          ttp2::Packet::Packet packet = serverSessionController->popRequest();
+          this->logger->log(tablog::DEBUG, "Received packet id: " + std::to_string(packet.id));
+          serverSessionController->pushResponse(packet);
+        } else {
+          std::this_thread::yield();
+        }
       }
 
       this->logger->log(tablog::INFO, "Terminated!");

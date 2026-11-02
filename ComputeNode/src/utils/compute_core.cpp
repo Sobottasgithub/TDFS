@@ -46,6 +46,8 @@ namespace tdfs {
           discoveredAddresses.push_back(newDiscoveries[index]);
         }
       }
+      
+      std::this_thread::yield();
     }
 
     if (clientDiscoveryThread.joinable()) {

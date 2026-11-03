@@ -20,6 +20,10 @@ namespace tdfs::cli {
 
       query = ::readline("\033[45;97m TDFS \033[0m> ");
       std::string stringQuery = query;
+
+      if (stringQuery.length() == 0) {
+        continue;
+      }
       
       if (!stringQuery.compare("h")) {
         displayHelp();

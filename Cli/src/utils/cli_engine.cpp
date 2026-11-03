@@ -19,8 +19,10 @@ namespace tdfs::cli {
       // TODO: get responses
 
       query = ::readline("\033[45;97m TDFS \033[0m> ");
+      if (query == nullptr) {
+        continue;
+      }
       std::string stringQuery = query;
-
       if (stringQuery.length() == 0) {
         continue;
       }

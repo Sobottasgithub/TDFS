@@ -69,8 +69,14 @@ namespace tdfs::cli {
   void CliEngine::connectToTdfs() {
     char* ipV4 = ::readline(" Ip: ");
     char* charPort = ::readline(" Port: ");
-    int port = std::stoi(charPort);
-    this->apiClient.connect(ipV4, port);
+    try {
+      int port = std::stoi(charPort);
+      this->apiClient.connect(ipV4, port);
+    } catch (const std::invalid_argument&) {
+      std::cout << "\033[45;101m ERROR: \033[0m Invalid Port" << std::endl;
+    } catch (const std::out_of_range&) {
+      std::cout << "\033[45;101m ERROR: \033[0m Port does not exist" << std::endl;
+    }
   }
 
   void CliEngine::displayWelcomeMessage() {

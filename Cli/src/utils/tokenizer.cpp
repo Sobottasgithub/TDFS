@@ -10,7 +10,9 @@ namespace {
   
       // Create tokens
       if (!currentChar.compare(" ")) {
-        tokens.push_back(currentToken);
+        if (currentToken.size() > 0) {
+          tokens.push_back(currentToken);
+        }
         currentToken = "";
       } else if (index == command.size()-1) {
         currentToken += currentChar;
@@ -30,6 +32,9 @@ namespace tdfs::cli::tokenizer {
     std::vector<std::string> tokens = toTokens(command);
 
     GenericCommand genericCommand;
+    if (tokens.size() == 0) {
+      return genericCommand;
+    }
     genericCommand.command = tokens.at(0);
 
     // INFO: Starts with index 1 because first token is the command

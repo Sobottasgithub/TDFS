@@ -39,6 +39,10 @@ namespace tdfs {
     return getPathValueFromConfig("/Configuration/NameDirectory");
   }
 
+  std::filesystem::path Config::getFileInformationDir() {
+    return getPathValueFromConfig("/Configuration/FileInformationDirectory");
+  }
+
   std::string Config::getUdpDiscoveryInterface() {
     return getStringValueFromConfig("/Configuration/UdpDiscovery/Interface");
   }

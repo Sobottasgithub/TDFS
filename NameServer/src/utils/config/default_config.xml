@@ -5,6 +5,7 @@
   <Blocksize>134217728</Blocksize>
   
   <NameDirectory></NameDirectory>
+  <FileInformationDirectory></FileInformationDirectory>
   
   <UdpDiscovery>
     <Interface></Interface>

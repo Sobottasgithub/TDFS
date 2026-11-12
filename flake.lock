@@ -109,11 +109,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1792336635,
-        "narHash": "sha256-4KlHbfWiJ3CsdJbOQgfEGE3sxVTXF+az/jLgYUoQ+MI=",
+        "lastModified": 1793694276,
+        "narHash": "sha256-d1FTLTnfP/ViU8lJcM+AqWApEEkpahkdrceBNetA1E4=",
         "owner": "Sobottasgithub",
         "repo": "tablog",
-        "rev": "2439f224717b437639232b2367ec32ce58691d66",
+        "rev": "4b527f9763d1ae03a587c87fee5844b1eedc45f8",
         "type": "github"
       },
       "original": {
@@ -164,11 +164,11 @@
         "tablog": "tablog_2"
       },
       "locked": {
-        "lastModified": 1793037426,
-        "narHash": "sha256-5RT24OHHJTSKQu+NEfBjAlaqtLlxSD022K+t8OF2zZY=",
+        "lastModified": 1794395694,
+        "narHash": "sha256-dfz69nUGJWy8JzGl80m22T+Yu4BeEz+noY1L+6qCe+w=",
         "owner": "Sobottasgithub",
         "repo": "ttp2",
-        "rev": "fa5dec7990f9ac010136d78ca431f407c581e86d",
+        "rev": "4d393351ad17d1356facfaffcc18efc69f3dd7e8",
         "type": "github"
       },
       "original": {

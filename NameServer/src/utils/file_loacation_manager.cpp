@@ -20,7 +20,7 @@ namespace tdfs {
     tdfs::Config& config = tdfs::Config::getInstance();
     const std::filesystem::path fileInformationDir = config.getFileInformationDir();
     initXmlFile(fileInformationDir);
-    informationFile.reset();
+    this->xmlFile.reset();
   }
 
   void FileLocationManager::initXmlFile(const std::filesystem::path fileInformationDir) {
@@ -33,17 +33,17 @@ namespace tdfs {
       std::filesystem::create_directories(fileInformationDir);
     }
 
-    const std::filesystem::path fileInformationFile = fileInformationDir / "file_information.xml";
-    if (!std::filesystem::exists(fileInformationFile)) {
-      this->logger->log(tablog::DEBUG, "Create information file: " + fileInformationFile.filename().string());
-      std::ofstream InformationFile(fileInformationFile);
+    this->xmlFilePath = fileInformationDir / "file_information.xml";
+    if (!std::filesystem::exists(this->xmlFilePath)) {
+      this->logger->log(tablog::DEBUG, "Create information file: " + this->xmlFilePath.filename().string());
+      std::ofstream InformationFile(this->xmlFilePath);
       InformationFile.close();
     }
 
-    pugi::xml_parse_result loadResult = this->informationFile.load_file(fileInformationFile.c_str());
+    pugi::xml_parse_result loadResult = this->xmlFile.load_file(this->xmlFilePath.c_str());
     if (loadResult.status == pugi::status_no_document_element) {
-      pugi::xml_node filesRoot = this->informationFile.append_child("Files");
-      if (!this->informationFile.save_file(fileInformationFile.c_str())) {
+      pugi::xml_node filesRoot = this->xmlFile.append_child("Files");
+      if (!this->xmlFile.save_file(this->xmlFilePath.c_str())) {
         throw std::runtime_error("Failed to store Files in information file");
       }
     } else if (!loadResult) {
@@ -51,10 +51,14 @@ namespace tdfs {
     }
   }
 
+  bool FileLocationManager::storeXmlFile() {
+    return this->xmlFile.save_file(this->xmlFilePath.c_str());
+  }
+
   bool FileLocationManager::createFile(const std::string fileName) {
-    if (!informationFile.empty()) {
+    if (!this->xmlFile.empty()) {
       const std::string fileXmlPath = "/Files/File[@name='" + fileName + "']";
-      pugi::xpath_node match = this->informationFile.select_node(fileXmlPath.c_str());
+      pugi::xpath_node match = this->xmlFile.select_node(fileXmlPath.c_str());
 
       // INFO: Only create File if it does not exist already
       if (!match) {

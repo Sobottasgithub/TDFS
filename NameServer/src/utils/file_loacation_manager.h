@@ -16,9 +16,11 @@ namespace tdfs {
       
     private:
       std::shared_ptr<tablog::Tablog> logger;
-      pugi::xml_document informationFile;
+      std::filesystem::path xmlFilePath;
+      pugi::xml_document xmlFile;
 
       void initXmlFile(const std::filesystem::path fileInformationDir);
+      bool storeXmlFile();
   };
 }
 

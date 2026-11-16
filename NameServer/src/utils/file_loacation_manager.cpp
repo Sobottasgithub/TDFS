@@ -6,6 +6,7 @@
 #include <fstream>
 #include <stdexcept>
 
+#include <string>
 #include <tablog.h>
 #include <tablog_registry.h>
 
@@ -18,11 +19,11 @@ namespace tdfs {
 
     tdfs::Config& config = tdfs::Config::getInstance();
     const std::filesystem::path fileInformationDir = config.getFileInformationDir();
-    initInformationFile(fileInformationDir);
+    initXmlFile(fileInformationDir);
     informationFile.reset();
   }
 
-  void FileLocationManager::initInformationFile(const std::filesystem::path fileInformationDir) {
+  void FileLocationManager::initXmlFile(const std::filesystem::path fileInformationDir) {
     if (!fileInformationDir.filename().empty() && fileInformationDir.has_extension()) {
       throw std::invalid_argument("FileInformationDir expected path. A File was provided");
     }
@@ -48,5 +49,19 @@ namespace tdfs {
     } else if (!loadResult) {
       throw std::invalid_argument("Error while loading file Information");
     }
+  }
+
+  bool FileLocationManager::createFile(const std::string fileName) {
+    if (!informationFile.empty()) {
+      const std::string fileXmlPath = "/Files/File[@name='" + fileName + "']";
+      pugi::xpath_node match = this->informationFile.select_node(fileXmlPath.c_str());
+
+      // INFO: Only create File if it does not exist already
+      if (!match) {
+        // TODO: Create Files... <File name="">
+        return true;        
+      }
+    }
+    return false;
   }
 }

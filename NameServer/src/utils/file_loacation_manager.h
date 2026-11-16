@@ -11,11 +11,14 @@ namespace tdfs {
   class FileLocationManager {
     public:
       FileLocationManager();
+
+      bool createFile(const std::string fileName);
+      
     private:
       std::shared_ptr<tablog::Tablog> logger;
       pugi::xml_document informationFile;
 
-      void initInformationFile(const std::filesystem::path fileInformationDir);
+      void initXmlFile(const std::filesystem::path fileInformationDir);
   };
 }
 

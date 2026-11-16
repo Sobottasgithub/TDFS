@@ -20,6 +20,7 @@ namespace tdfs {
     tdfs::Config& config = tdfs::Config::getInstance();
     const std::filesystem::path fileInformationDir = config.getFileInformationDir();
     initXmlFile(fileInformationDir);
+    createFile("Test");
     this->xmlFile.reset();
   }
 
@@ -57,13 +58,19 @@ namespace tdfs {
 
   bool FileLocationManager::createFile(const std::string fileName) {
     if (!this->xmlFile.empty()) {
-      const std::string fileXmlPath = "/Files/File[@name='" + fileName + "']";
-      pugi::xpath_node match = this->xmlFile.select_node(fileXmlPath.c_str());
+      pugi::xml_node fileRoot = this->xmlFile.child("Files");
+      const std::string fileXmlPath = "/File[@name='" + fileName + "']";
+      pugi::xpath_node match = fileRoot.select_node(fileXmlPath.c_str());
 
       // INFO: Only create File if it does not exist already
       if (!match) {
-        // TODO: Create Files... <File name="">
-        return true;        
+        pugi::xml_node newFile = fileRoot.append_child("File");
+        newFile.append_attribute("name") = fileName;
+
+        if (storeXmlFile()) {
+          return true;
+        }
+        return false;        
       }
     }
     return false;

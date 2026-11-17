@@ -22,6 +22,7 @@ namespace tdfs {
     initXmlFile(fileInformationDir);
     createFile("Test");
     createSnippet("Test", 100, 0, 100);
+    createSnippet("Test", 100, 101, 200);
     createReplication("Test", 0, "test/path/snippet1.csv");
   }
 
@@ -85,20 +86,20 @@ namespace tdfs {
 
       if (selectedFilePath) {
         pugi::xml_node file = fileRoot.select_node(fileXmlPath.c_str()).node();
-        pugi::xpath_node_set snippets = file.select_nodes("/Snippet");
+        pugi::xpath_node_set snippets = file.select_nodes("Snippet");
         int lastSnippetId = -1; // -1 to determin if snippet 0 already exists or not
         // INFO: Check if snippet with xStart and xEnd already exists
         for (pugi::xpath_node snippetPath : snippets) {
           pugi::xml_node snippet = snippetPath.node();
 
-          pugi::xpath_node xStart = snippet.select_node("/XStart");
+          pugi::xpath_node xStart = snippet.select_node("XStart");
           if (xStart) {
             const unsigned int snippetXStart = xStart.node().text().as_int();
             if (snippetXStart == start) {
               return false;
             } 
           }
-          pugi::xpath_node xEnd = snippet.select_node("/XEnd");
+          pugi::xpath_node xEnd = snippet.select_node("XEnd");
           if (xEnd) {
             const unsigned int snippetXEnd = xEnd.node().text().as_int();
             if (snippetXEnd == end) {
@@ -108,7 +109,7 @@ namespace tdfs {
           // INFO: Get id
           pugi::xml_attribute idAttribute = snippet.attribute("id");
           if (idAttribute) {
-            const unsigned int currentId = idAttribute.as_int();
+            const int currentId = idAttribute.as_int();
             if (currentId > lastSnippetId) {
               lastSnippetId = currentId;
             } 
@@ -157,7 +158,7 @@ namespace tdfs {
             if (!nodeName.compare("Replication")) {
               pugi::xml_attribute idAttribute = replication.attribute("id");
               if (idAttribute) {
-                const unsigned int currentId = idAttribute.as_int();
+                const int currentId = idAttribute.as_int();
                 if (currentId > lastReplicationId) {
                   lastReplicationId = currentId;
                 } 

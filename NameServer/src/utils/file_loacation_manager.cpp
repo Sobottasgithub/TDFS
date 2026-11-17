@@ -148,7 +148,7 @@ namespace tdfs {
         pugi::xpath_node selectedSnippetPath = file.select_node(snippetXmlPath.c_str());
 
         if (selectedSnippetPath) {
-          pugi::xml_node snippet = fileRoot.select_node(snippetXmlPath.c_str()).node();
+          pugi::xml_node snippet = file.select_node(snippetXmlPath.c_str()).node();
 
           // INFO: Get last replication id
           int lastReplicationId = -1;

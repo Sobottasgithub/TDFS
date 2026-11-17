@@ -117,6 +117,13 @@ namespace tdfs {
         pugi::xml_node newSnippet = file.append_child("Snippet");
         newSnippet.append_attribute("id") = lastSnippetId+1;
 
+        pugi::xml_node xStartNode = newSnippet.append_child("XStart");
+        xStartNode.text().set(start);
+        pugi::xml_node xEndNode = newSnippet.append_child("XEnd");
+        xEndNode.text().set(end);
+        pugi::xml_node sizeNode = newSnippet.append_child("Size");
+        sizeNode.text().set(size);
+
         if (storeXmlFile()) {
           return true;
         }

@@ -22,6 +22,7 @@ namespace tdfs {
     initXmlFile(fileInformationDir);
     createFile("Test");
     createSnippet("Test", 100, 0, 100);
+    createReplication("Test", 0, "test/path/snippet1.csv");
   }
 
   void FileLocationManager::initXmlFile(const std::filesystem::path fileInformationDir) {
@@ -126,6 +127,55 @@ namespace tdfs {
 
         if (storeXmlFile()) {
           return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool FileLocationManager::createReplication(const std::string fileName,
+                                              const unsigned int id,
+                                              const std::filesystem::path snippetStoragePath) {
+    if (!this->xmlFile.empty()) {
+      pugi::xml_node fileRoot = this->xmlFile.child("Files");
+      const std::string fileXmlPath = "File[@name='" + fileName + "']";
+      pugi::xpath_node selectedFilePath = fileRoot.select_node(fileXmlPath.c_str());
+
+      if (selectedFilePath) {
+        pugi::xml_node file = fileRoot.select_node(fileXmlPath.c_str()).node();
+        const std::string snippetXmlPath = "Snippet[@id='" + std::to_string(id) + "']";
+        pugi::xpath_node selectedSnippetPath = file.select_node(snippetXmlPath.c_str());
+
+        if (selectedSnippetPath) {
+          pugi::xml_node snippet = fileRoot.select_node(snippetXmlPath.c_str()).node();
+
+          // INFO: Get last replication id
+          int lastReplicationId = -1;
+          for (pugi::xpath_node replicationPath : snippet) {
+            pugi::xml_node replication = replicationPath.node();
+            std::string nodeName = replication.name();
+            if (!nodeName.compare("Replication")) {
+              pugi::xml_attribute idAttribute = replication.attribute("id");
+              if (idAttribute) {
+                const unsigned int currentId = idAttribute.as_int();
+                if (currentId > lastReplicationId) {
+                  lastReplicationId = currentId;
+                } 
+              }
+            }
+          }
+
+          pugi::xml_node newReplication = snippet.append_child("Replication");
+          newReplication.append_attribute("id") = lastReplicationId+1;
+
+          // TODO: Add node information
+
+          pugi::xml_node pathNode = newReplication.append_child("StoragePath");
+          pathNode.text().set(snippetStoragePath.string());
+
+          if (storeXmlFile()) {
+            return true;
+          }
         }
       }
     }

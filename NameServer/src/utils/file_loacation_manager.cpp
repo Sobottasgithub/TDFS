@@ -23,7 +23,7 @@ namespace tdfs {
     createFile("Test");
     createSnippet("Test", 100, 0, 100);
     createSnippet("Test", 100, 101, 200);
-    createReplication("Test", 0, "test/path/snippet1.csv");
+    createReplication("Test", 0, "test/path/snippet1.csv", "127.0.0.1", 4000);
   }
 
   void FileLocationManager::initXmlFile(const std::filesystem::path fileInformationDir) {
@@ -136,7 +136,9 @@ namespace tdfs {
 
   bool FileLocationManager::createReplication(const std::string fileName,
                                               const unsigned int id,
-                                              const std::filesystem::path snippetStoragePath) {
+                                              const std::filesystem::path snippetStoragePath,
+                                              const std::string storageNodeIpv4,
+                                              const unsigned int port) {
     if (!this->xmlFile.empty()) {
       pugi::xml_node fileRoot = this->xmlFile.child("Files");
       const std::string fileXmlPath = "File[@name='" + fileName + "']";
@@ -169,7 +171,11 @@ namespace tdfs {
           pugi::xml_node newReplication = snippet.append_child("Replication");
           newReplication.append_attribute("id") = lastReplicationId+1;
 
-          // TODO: Add node information
+          pugi::xml_node newStorageNode = newReplication.append_child("StorageNode");
+          pugi::xml_node storageNodeIp = newStorageNode.append_child("Ip");
+          storageNodeIp.text().set(storageNodeIpv4);
+          pugi::xml_node storageNodePort = newStorageNode.append_child("Port");
+          storageNodePort.text().set(storageNodePort);
 
           pugi::xml_node pathNode = newReplication.append_child("StoragePath");
           pathNode.text().set(snippetStoragePath.string());

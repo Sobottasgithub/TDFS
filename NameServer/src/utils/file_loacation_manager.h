@@ -15,7 +15,9 @@ namespace tdfs {
       bool createFile(const std::string fileName);
       bool createSnippet(const std::string fileName, const unsigned int size,
                          const unsigned int start, const unsigned int end);
-      bool createReplication(const std::string fileName, const unsigned int id, const std::filesystem::path snippetStoragePath);
+      bool createReplication(const std::string fileName, const unsigned int id,
+                             const std::filesystem::path snippetStoragePath,
+                             const std::string storageNodeIpv4, const unsigned int port);
       
     private:
       std::shared_ptr<tablog::Tablog> logger;

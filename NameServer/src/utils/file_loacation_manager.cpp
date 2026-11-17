@@ -21,7 +21,7 @@ namespace tdfs {
     const std::filesystem::path fileInformationDir = config.getFileInformationDir();
     initXmlFile(fileInformationDir);
     createFile("Test");
-    this->xmlFile.reset();
+    createSnippet("Test", 100, 0, 100);
   }
 
   void FileLocationManager::initXmlFile(const std::filesystem::path fileInformationDir) {
@@ -59,7 +59,7 @@ namespace tdfs {
   bool FileLocationManager::createFile(const std::string fileName) {
     if (!this->xmlFile.empty()) {
       pugi::xml_node fileRoot = this->xmlFile.child("Files");
-      const std::string fileXmlPath = "/File[@name='" + fileName + "']";
+      const std::string fileXmlPath = "File[@name='" + fileName + "']";
       pugi::xpath_node match = fileRoot.select_node(fileXmlPath.c_str());
 
       // INFO: Only create File if it does not exist already
@@ -70,7 +70,56 @@ namespace tdfs {
         if (storeXmlFile()) {
           return true;
         }
-        return false;        
+      }
+    }
+    return false;
+  }
+
+  bool FileLocationManager::createSnippet(const std::string fileName, const unsigned int size,
+                                          const unsigned int start, const unsigned int end) {
+    if (!this->xmlFile.empty()) {
+      pugi::xml_node fileRoot = this->xmlFile.child("Files");
+      const std::string fileXmlPath = "File[@name='" + fileName + "']";
+      pugi::xpath_node selectedFilePath = fileRoot.select_node(fileXmlPath.c_str());
+
+      if (selectedFilePath) {
+        pugi::xml_node file = fileRoot.select_node(fileXmlPath.c_str()).node();
+        pugi::xpath_node_set snippets = file.select_nodes("/Snippet");
+        int lastSnippetId = -1; // -1 to determin if snippet 0 already exists or not
+        // INFO: Check if snippet with xStart and xEnd already exists
+        for (pugi::xpath_node snippetPath : snippets) {
+          pugi::xml_node snippet = snippetPath.node();
+
+          pugi::xpath_node xStart = snippet.select_node("/XStart");
+          if (xStart) {
+            const unsigned int snippetXStart = xStart.node().text().as_int();
+            if (snippetXStart == start) {
+              return false;
+            } 
+          }
+          pugi::xpath_node xEnd = snippet.select_node("/XEnd");
+          if (xEnd) {
+            const unsigned int snippetXEnd = xEnd.node().text().as_int();
+            if (snippetXEnd == end) {
+              return false;
+            } 
+          }
+          // INFO: Get id
+          pugi::xml_attribute idAttribute = snippet.attribute("id");
+          if (idAttribute) {
+            const unsigned int currentId = idAttribute.as_int();
+            if (currentId > lastSnippetId) {
+              lastSnippetId = currentId;
+            } 
+          }
+        }
+        // INFO: Create snippet
+        pugi::xml_node newSnippet = file.append_child("Snippet");
+        newSnippet.append_attribute("id") = lastSnippetId+1;
+
+        if (storeXmlFile()) {
+          return true;
+        }
       }
     }
     return false;

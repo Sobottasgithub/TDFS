@@ -13,6 +13,8 @@ namespace tdfs {
       FileLocationManager();
 
       bool createFile(const std::string fileName);
+      bool createSnippet(const std::string fileName, const unsigned int size,
+                         const unsigned int start, const unsigned int end);
       
     private:
       std::shared_ptr<tablog::Tablog> logger;

@@ -4,7 +4,7 @@
 #include <thread>
 
 #include "config/config.h"
-#include "file_loacation_manager.h"
+#include "file_distribution_manager.h"
 
 #include <tablog_registry.h>
 
@@ -15,7 +15,7 @@ namespace tdfs {
 
     this->logger->log(tablog::DEBUG, "Init nameServer");
 
-    FileLocationManager fileLocationManager;
+    FileDistributionManager fileDistributionManager;
     
     std::thread discoveryThread([this]() {
         udpDiscoverySession();

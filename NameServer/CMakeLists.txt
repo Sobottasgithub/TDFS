@@ -10,6 +10,7 @@ file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.c")
 # file(GLOB_RECURSE HEADERS "include/*.h")
 
 find_package(pugixml REQUIRED)
+find_package(Arrow REQUIRED)
 
 add_executable(name-server ${SOURCES})
 
@@ -17,5 +18,6 @@ target_link_libraries(name-server PRIVATE tablog)
 target_link_libraries(name-server PRIVATE ttp2)
 target_link_libraries(name-server PRIVATE tud)
 target_link_libraries(name-server PRIVATE pugixml::pugixml)
+target_link_libraries(name-server PRIVATE Arrow::arrow_shared)
 
 install(TARGETS name-server DESTINATION bin)

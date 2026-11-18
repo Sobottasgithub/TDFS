@@ -35,10 +35,6 @@ namespace tdfs {
     return getIntValueFromConfig("/Configuration/Blocksize");
   }
   
-  std::filesystem::path Config::getNameDir() {
-    return getPathValueFromConfig("/Configuration/NameDirectory");
-  }
-
   std::filesystem::path Config::getFileInformationDir() {
     return getPathValueFromConfig("/Configuration/FileInformationDirectory");
   }

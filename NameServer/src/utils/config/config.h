@@ -20,7 +20,6 @@ namespace tdfs {
 
       int getReplications();
       int getBlocksize();
-      std::filesystem::path getNameDir();
       std::filesystem::path getFileInformationDir();
       std::string getUdpDiscoveryInterface();
       int getUdpDiscoveryPort();

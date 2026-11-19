@@ -1,17 +1,23 @@
 #ifndef FILE_DISTRIBUTION_MANAGER
 #define FILE_DISTRIBUTION_MANAGER
 
+#include "file_loacation_manager.h"
 #include <memory>
 #include <arrow/csv/api.h>
+#include <filesystem>
 
 namespace tdfs {
   class FileDistributionManager {
     public:
       FileDistributionManager();
 
-      std::shared_ptr<arrow::Table> simulateFileUpload();
-            
-      bool addFile();
+      std::shared_ptr<arrow::Table> simulateFileUpload(const std::filesystem::path filePath);
+      bool addFile(std::shared_ptr<arrow::Table> inputFile, const std::filesystem::path fileName);
+
+    private:
+      FileLocationManager fileLocationManager;
+
+      std::filesystem::path getUniqueFileName(std::filesystem::path fileName);
   };
 }
 

@@ -20,10 +20,6 @@ namespace tdfs {
     tdfs::Config& config = tdfs::Config::getInstance();
     const std::filesystem::path fileInformationDir = config.getFileInformationDir();
     initXmlFile(fileInformationDir);
-    createFile("Test");
-    createSnippet("Test", 100, 0, 100);
-    createSnippet("Test", 100, 101, 200);
-    createReplication("Test", 0, "test/path/snippet1.csv", "127.0.0.1", 4000);
   }
 
   void FileLocationManager::initXmlFile(const std::filesystem::path fileInformationDir) {
@@ -187,5 +183,24 @@ namespace tdfs {
       }
     }
     return false;
+  }
+
+  std::vector<std::filesystem::path> FileLocationManager::getFileNames() {
+    std::vector<std::filesystem::path> fileNames;
+
+    if (!this->xmlFile.empty()) {
+      pugi::xml_node fileRoot = this->xmlFile.child("Files");
+      for (pugi::xpath_node filePath : fileRoot) {
+        pugi::xml_node file = filePath.node();
+        std::string fileXmlName = file.name();
+        if (!fileXmlName.compare("File")) {
+          pugi::xml_attribute nameAttribute = file.attribute("name");
+          if (nameAttribute) {
+            fileNames.emplace_back(nameAttribute.as_string());
+          }
+        }
+      }
+    }
+    return fileNames;
   }
 }

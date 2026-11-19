@@ -4,6 +4,7 @@
 #include <memory>
 #include <filesystem>
 #include <pugixml.hpp>
+#include <vector>
 
 #include <tablog.h>
 
@@ -18,6 +19,7 @@ namespace tdfs {
       bool createReplication(const std::string fileName, const unsigned int id,
                              const std::filesystem::path snippetStoragePath,
                              const std::string storageNodeIpv4, const unsigned int port);
+      std::vector<std::filesystem::path> getFileNames();
       
     private:
       std::shared_ptr<tablog::Tablog> logger;

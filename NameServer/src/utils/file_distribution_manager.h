@@ -8,6 +8,8 @@
 #include <arrow/csv/api.h>
 #include <filesystem>
 
+#include <tablog.h>
+
 namespace tdfs {
   class FileDistributionManager {
     public:
@@ -17,6 +19,7 @@ namespace tdfs {
       bool addFile(std::shared_ptr<arrow::Table> inputFile, const std::filesystem::path fileName);
 
     private:
+      std::shared_ptr<tablog::Tablog> logger;
       FileLocationManager fileLocationManager;
       tdfs::Config& config = tdfs::Config::getInstance();
 

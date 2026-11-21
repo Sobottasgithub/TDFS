@@ -5,15 +5,23 @@
 
 #include <filesystem>
 #include <iostream>
+#include <stdexcept>
 #include <string>
+#include <tablog.h>
+#include <tablog_registry.h>
 
 namespace tdfs {
   FileDistributionManager::FileDistributionManager() {
+    tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
+    this->logger = registry->get("TDFS");
+
     std::cout << "Provide file path: ";
     std::filesystem::path filePath;
     std::cin >> filePath;
 
     addFile(simulateFileUpload(filePath), filePath);
+
+    this->logger->log(tablog::DEBUG, "Done!");
   }
 
   std::shared_ptr<arrow::Table> FileDistributionManager::simulateFileUpload(const std::filesystem::path filePath) {    
@@ -32,13 +40,15 @@ namespace tdfs {
                                                     parseOptions,
                                                     convertOptions);
     if (!maybeReader.ok()) {
-     std::cout << "Error while instantiating TableReader!" << std::endl;
+     this->logger->log(tablog::ERROR, "Error while instantiating TableReader!");
+     throw std::runtime_error("Error while instantiating TableReader!");
     }
     std::shared_ptr<arrow::csv::TableReader> reader = *maybeReader;
 
     arrow::Result<std::shared_ptr<arrow::Table>> maybeTable = reader->Read();
     if (!maybeTable.ok()) {
-      std::cout << "Error while read table from CSV file!" << std::endl;
+      this->logger->log(tablog::ERROR, "Error while read table from CSV file!");
+      throw std::runtime_error("Error while read table from CSV file!");
     }
     std::shared_ptr<arrow::Table> table = *maybeTable;
     return table;
@@ -51,14 +61,16 @@ namespace tdfs {
     // WARNING: This only simulates UDP discovery
     // TODO: Replace with real UDP discovered nodes
     //       And check if it is a compute node
-    std::vector<std::string> computeNodes = {"127.0.0.1", "127.0.0.2", "127.0.0.3"};
+    std::vector<std::string> computeNodes = {"127.0.0.1"};
+
+    logger->log(tablog::DEBUG, "here");
     
     int currentReplicationCount = config.getReplications();
     if (computeNodes.size() < currentReplicationCount) {
       bool displayedWarning = false;
       while (computeNodes.size() < currentReplicationCount) {
         if (!displayedWarning) {
-          // TODO: display Warning
+          this->logger->log(tablog::WARNING, "Node count was not sufficient to satisfy replication count. Scaling down replication count...");
           displayedWarning = true;
         }
         currentReplicationCount--;

@@ -2,9 +2,12 @@
 
 #include <arrow/csv/options.h>
 #include <arrow/io/api.h>
+#include <arrow/api.h>
 
+#include <arrow/table.h>
 #include <filesystem>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <tablog.h>
@@ -61,9 +64,7 @@ namespace tdfs {
     // WARNING: This only simulates UDP discovery
     // TODO: Replace with real UDP discovered nodes
     //       And check if it is a compute node
-    std::vector<std::string> computeNodes = {"127.0.0.1"};
-
-    logger->log(tablog::DEBUG, "here");
+    std::vector<std::string> computeNodes = {"127.0.0.1", "127.0.0.2", "127.0.0.3"};
     
     int currentReplicationCount = config.getReplications();
     if (computeNodes.size() < currentReplicationCount) {
@@ -76,11 +77,23 @@ namespace tdfs {
         currentReplicationCount--;
       }
     }
-    
-    // this->fileLocationManager.createSnippet("Test", 100, 0, 100);
-    // this->fileLocationManager.createSnippet("Test", 100, 101, 200);
-    // this->fileLocationManager.createReplication("Test", 0, "test/path/snippet1.csv", "127.0.0.1", 4000);
 
+    int64_t blockSize = config.getBlocksize();
+    int64_t totalRows = inputFile->num_rows();
+    int64_t offset = 0;
+    while (offset < totalRows) {
+        int64_t currentBatchSize = std::min(blockSize, totalRows - offset);
+        this->fileLocationManager.createSnippet(newFileName, currentBatchSize, offset, (offset + currentBatchSize - 1));
+        std::shared_ptr<arrow::Table> slicedTableBlock = inputFile->Slice(offset, currentBatchSize);
+        // TODO: Send slicedTableBlock to compute node
+
+        logger->log(tablog::DEBUG, "Processing rows " + std::to_string(offset) + " to " + std::to_string(offset + currentBatchSize - 1));
+        // TODO: Create Replications
+        // this->fileLocationManager.createReplication("Test", 0, "test/path/snippet1.csv", "127.0.0.1", 4000);
+    
+        offset += currentBatchSize;
+    }
+    
     return true;
   }
 

@@ -2,7 +2,7 @@
 <Configuration>
   <Replications>2</Replications>
   
-  <Blocksize>134217728</Blocksize>
+  <Blocksize></Blocksize>
   
   <FileInformationDirectory></FileInformationDirectory>
   

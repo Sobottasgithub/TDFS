@@ -133,8 +133,7 @@ namespace tdfs {
   bool FileLocationManager::createReplication(const std::string fileName,
                                               const unsigned int id,
                                               const std::filesystem::path snippetStoragePath,
-                                              const std::string storageNodeIpv4,
-                                              const unsigned int port) {
+                                              const std::string storageNodeIpv4) {
     if (!this->xmlFile.empty()) {
       pugi::xml_node fileRoot = this->xmlFile.child("Files");
       const std::string fileXmlPath = "File[@name='" + fileName + "']";
@@ -170,8 +169,6 @@ namespace tdfs {
           pugi::xml_node newStorageNode = newReplication.append_child("StorageNode");
           pugi::xml_node storageNodeIp = newStorageNode.append_child("Ip");
           storageNodeIp.text().set(storageNodeIpv4);
-          pugi::xml_node storageNodePort = newStorageNode.append_child("Port");
-          storageNodePort.text().set(storageNodePort);
 
           pugi::xml_node pathNode = newReplication.append_child("StoragePath");
           pathNode.text().set(snippetStoragePath.string());

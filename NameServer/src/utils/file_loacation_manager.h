@@ -18,7 +18,7 @@ namespace tdfs {
                          const unsigned int start, const unsigned int end);
       bool createReplication(const std::string fileName, const unsigned int id,
                              const std::filesystem::path snippetStoragePath,
-                             const std::string storageNodeIpv4, const unsigned int port);
+                             const std::string storageNodeIpv4);
       std::vector<std::filesystem::path> getFileNames();
       
     private:

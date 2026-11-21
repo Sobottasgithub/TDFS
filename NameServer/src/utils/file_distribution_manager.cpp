@@ -78,19 +78,31 @@ namespace tdfs {
       }
     }
 
-    int64_t blockSize = config.getBlocksize();
-    int64_t totalRows = inputFile->num_rows();
+    const int64_t blockSize = config.getBlocksize();
+    const int64_t totalRows = inputFile->num_rows();
     int64_t offset = 0;
+    int snippetIndex = 0;
+    int nodeReplicationDistributionIndex = 0;
     while (offset < totalRows) {
         int64_t currentBatchSize = std::min(blockSize, totalRows - offset);
         this->fileLocationManager.createSnippet(newFileName, currentBatchSize, offset, (offset + currentBatchSize - 1));
         std::shared_ptr<arrow::Table> slicedTableBlock = inputFile->Slice(offset, currentBatchSize);
-        // TODO: Send slicedTableBlock to compute node
 
         logger->log(tablog::DEBUG, "Processing rows " + std::to_string(offset) + " to " + std::to_string(offset + currentBatchSize - 1));
-        // TODO: Create Replications
-        // this->fileLocationManager.createReplication("Test", 0, "test/path/snippet1.csv", "127.0.0.1", 4000);
-    
+        for (int replicationIndex = 0; replicationIndex < currentReplicationCount; replicationIndex++) {
+          const std::string nodeIpV4 = computeNodes.at(nodeReplicationDistributionIndex);
+          // TODO: Send slicedTableBlock to compute node
+          const std::string realFilePath = newFileName; // TODO: Replace with compute nodes real file location later
+          this->fileLocationManager.createReplication(newFileName, snippetIndex, realFilePath, nodeIpV4);
+
+          if (nodeReplicationDistributionIndex + 1 == computeNodes.size()) {
+            nodeReplicationDistributionIndex = 0;
+          } else {
+            nodeReplicationDistributionIndex++;
+          }
+        }
+
+        snippetIndex++;
         offset += currentBatchSize;
     }
     

@@ -10,4 +10,8 @@
     <Interface></Interface>
     <Port></Port>
   </UdpDiscovery>
+
+  <Node>
+    <Port></Port>
+  </Node>
 </Configuration>

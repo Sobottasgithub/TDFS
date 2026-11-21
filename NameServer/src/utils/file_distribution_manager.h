@@ -2,6 +2,8 @@
 #define FILE_DISTRIBUTION_MANAGER
 
 #include "file_loacation_manager.h"
+#include "config/config.h"
+
 #include <memory>
 #include <arrow/csv/api.h>
 #include <filesystem>
@@ -16,6 +18,7 @@ namespace tdfs {
 
     private:
       FileLocationManager fileLocationManager;
+      tdfs::Config& config = tdfs::Config::getInstance();
 
       std::filesystem::path getUniqueFileName(std::filesystem::path fileName);
   };

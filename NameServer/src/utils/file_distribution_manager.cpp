@@ -47,6 +47,24 @@ namespace tdfs {
   bool FileDistributionManager::addFile(std::shared_ptr<arrow::Table> inputFile, const std::filesystem::path fileName) {
     std::filesystem::path newFileName = getUniqueFileName(fileName);
     this->fileLocationManager.createFile(newFileName);
+
+    // WARNING: This only simulates UDP discovery
+    // TODO: Replace with real UDP discovered nodes
+    //       And check if it is a compute node
+    std::vector<std::string> computeNodes = {"127.0.0.1", "127.0.0.2", "127.0.0.3"};
+    
+    int currentReplicationCount = config.getReplications();
+    if (computeNodes.size() < currentReplicationCount) {
+      bool displayedWarning = false;
+      while (computeNodes.size() < currentReplicationCount) {
+        if (!displayedWarning) {
+          // TODO: display Warning
+          displayedWarning = true;
+        }
+        currentReplicationCount--;
+      }
+    }
+    
     // this->fileLocationManager.createSnippet("Test", 100, 0, 100);
     // this->fileLocationManager.createSnippet("Test", 100, 101, 200);
     // this->fileLocationManager.createReplication("Test", 0, "test/path/snippet1.csv", "127.0.0.1", 4000);

@@ -8,12 +8,13 @@
 #include <arrow/csv/api.h>
 #include <filesystem>
 
+#include <server_discovery.h>
 #include <tablog.h>
 
 namespace tdfs {
   class FileDistributionManager {
     public:
-      FileDistributionManager();
+      FileDistributionManager(std::shared_ptr<tud::ServerDiscovery> serverDiscovery);
 
       std::shared_ptr<arrow::Table> simulateFileUpload(const std::filesystem::path filePath);
       bool addFile(std::shared_ptr<arrow::Table> inputFile, const std::filesystem::path fileName);
@@ -21,6 +22,7 @@ namespace tdfs {
     private:
       std::shared_ptr<tablog::Tablog> logger;
       FileLocationManager fileLocationManager;
+      std::shared_ptr<tud::ServerDiscovery> serverDiscovery;
       tdfs::Config& config = tdfs::Config::getInstance();
 
       std::filesystem::path getUniqueFileName(std::filesystem::path fileName);

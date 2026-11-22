@@ -2,7 +2,9 @@
 #define NAME_SERVER_CORE_H
 
 #include <memory>
+#include <future>
 
+#include <server_discovery.h>
 #include <tablog.h>
 
 namespace tdfs {
@@ -12,8 +14,9 @@ namespace tdfs {
 
     private:
       std::shared_ptr<tablog::Tablog> logger;
+      std::shared_ptr<tud::ServerDiscovery> serverDiscovery;
 
-      void udpDiscoverySession();
+      void udpDiscoverySession(std::promise<void> udpInitDone);
   };
 }
 

@@ -14,9 +14,11 @@
 #include <tablog_registry.h>
 
 namespace tdfs {
-  FileDistributionManager::FileDistributionManager() {
+  FileDistributionManager::FileDistributionManager(std::shared_ptr<tud::ServerDiscovery> serverDiscovery) {
     tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
     this->logger = registry->get("TDFS");
+
+    this->serverDiscovery = serverDiscovery;
 
     std::cout << "Provide file path: ";
     std::filesystem::path filePath;

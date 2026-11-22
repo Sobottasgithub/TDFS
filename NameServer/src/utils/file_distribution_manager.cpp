@@ -5,6 +5,7 @@
 #include <arrow/api.h>
 
 #include <arrow/table.h>
+#include <cmath>
 #include <filesystem>
 #include <iostream>
 #include <memory>
@@ -63,11 +64,9 @@ namespace tdfs {
     std::filesystem::path newFileName = getUniqueFileName(fileName);
     this->fileLocationManager.createFile(newFileName);
 
-    // WARNING: This only simulates UDP discovery
-    // TODO: Replace with real UDP discovered nodes
-    //       And check if it is a compute node
-    std::vector<std::string> computeNodes = {"127.0.0.1", "127.0.0.2", "127.0.0.3"};
-    
+    std::vector<std::string> computeNodes = this->serverDiscovery->getDiscoveredAddresses();
+    logger->log(tablog::DEBUG, "ComputeNodes: " + std::to_string(computeNodes.size()));
+
     int currentReplicationCount = config.getReplications();
     if (computeNodes.size() < currentReplicationCount) {
       bool displayedWarning = false;

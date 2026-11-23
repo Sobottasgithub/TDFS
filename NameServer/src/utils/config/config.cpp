@@ -47,6 +47,14 @@ namespace tdfs {
     return getIntValueFromConfig("/Configuration/UdpDiscovery/Port");
   }
 
+  std::string Config::getUdpInterface() {
+    return getStringValueFromConfig("/Configuration/Udp/Interface");
+  }
+  
+  int Config::getUpdPort() {
+    return getIntValueFromConfig("/Configuration/Udp/Port");
+  }
+
   int Config::getNodePort() {
     return getIntValueFromConfig("/Configuration/Node/Port");
   }

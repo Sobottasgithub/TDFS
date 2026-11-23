@@ -23,6 +23,8 @@ namespace tdfs {
       std::filesystem::path getFileInformationDir();
       std::string getUdpDiscoveryInterface();
       int getUdpDiscoveryPort();
+      std::string getUdpInterface();
+      int getUpdPort();
       int getNodePort();
 
       std::filesystem::path getTdfsConfigDir();

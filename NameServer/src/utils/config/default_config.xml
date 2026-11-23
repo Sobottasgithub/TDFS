@@ -11,6 +11,11 @@
     <Port></Port>
   </UdpDiscovery>
 
+  <Udp>
+    <Interface></Interface>
+    <Port></Port>
+  </Udp>
+
   <Node>
     <Port></Port>
   </Node>

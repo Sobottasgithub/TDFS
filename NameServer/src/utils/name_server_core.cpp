@@ -16,18 +16,21 @@ namespace tdfs {
 
     this->logger->log(tablog::DEBUG, "Init nameServer");
 
-    std::promise<void> udpInitDone;
-    std::future<void> udpInitFuture = udpInitDone.get_future();
-    std::thread discoveryThread([this, udpInitDone = std::move(udpInitDone)]() mutable {
+    std::promise<void> udpDiscoveryInitDone;
+    std::future<void> udpDiscoveryInitFuture = udpDiscoveryInitDone.get_future();
+    std::thread discoveryThread([this, udpInitDone = std::move(udpDiscoveryInitDone)]() mutable {
       udpDiscoverySession(std::move(udpInitDone));
     });
 
-    std::thread peerControlletThread([this]() {
-      peerControllerSession();
+    std::promise<void> peerInitDone;
+    std::future<void> peerInitFuture = peerInitDone.get_future();
+    std::thread peerControlletThread([this, peerInitDone = std::move(peerInitDone)]() mutable {
+      peerControllerSession(std::move(peerInitDone));
     });
 
     // INFO: Wait for Udp to finish setup before passing the instance
-    udpInitFuture.wait();
+    udpDiscoveryInitFuture.wait();
+    peerInitFuture.wait();
     FileDistributionManager fileDistributionManager(this->serverDiscovery);
 
     if (discoveryThread.joinable()) {
@@ -52,7 +55,7 @@ namespace tdfs {
     }
   }
 
-  void NameServer::peerControllerSession() {
+  void NameServer::peerControllerSession(std::promise<void> peerInitDone) {
     tdfs::Config& config = tdfs::Config::getInstance();
 
     const std::string interface = config.getUdpInterface();
@@ -63,5 +66,10 @@ namespace tdfs {
     std::thread networkingSession([peerSessionController]() {
       peerSessionController->networkingSession();
     });
+    peerInitDone.set_value();
+
+    if (networkingSession.joinable()) {
+      networkingSession.join();
+    }
   }
 }

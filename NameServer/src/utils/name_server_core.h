@@ -19,7 +19,7 @@ namespace tdfs {
       std::shared_ptr<ttp2::PeerSessionController> peerSessionController;
 
       void udpDiscoverySession(std::promise<void> udpInitDone);
-      void peerControllerSession();
+      void peerControllerSession(std::promise<void> peerInitDone);
   };
 }
 

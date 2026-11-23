@@ -2,7 +2,10 @@
 
 #include "config/config.h"
 
+#include <network_helpers.h>
+#include <peer_session_controller.h>
 #include <client_discovery.h>
+#include <tablog.h>
 #include <thread>
 #include <algorithm>
 
@@ -16,11 +19,19 @@ namespace tdfs {
     this->logger->log(tablog::DEBUG, "Init floating node");
 
     std::thread discoveryThread([this]() {
-        udpDiscoverySession();
+      udpDiscoverySession();
+    });
+
+    std::thread peerSessionThread([this]() {
+      peerControllerSession();                              
     });
 
     if (discoveryThread.joinable()) {
       discoveryThread.join();
+    }
+
+    if (peerSessionThread.joinable()) {
+      peerSessionThread.join();
     }
   }
 
@@ -52,6 +63,29 @@ namespace tdfs {
 
     if (clientDiscoveryThread.joinable()) {
       clientDiscoveryThread.join();
+    }
+  }
+
+  void ComputeCore::peerControllerSession() {
+    tdfs::Config& config = tdfs::Config::getInstance();
+
+    const std::string interface = config.getUdpInterface();
+    const int port = config.getUpdPort();
+    const std::string ipV4 = ttp2::helpers::getLocalIpAddress(interface);
+    std::shared_ptr<ttp2::PeerSessionController> peerSessionController = std::make_shared<ttp2::PeerSessionController>(ipV4.c_str(), port);
+    std::thread networkingSession([peerSessionController]() {
+      peerSessionController->networkingSession();
+    });
+
+    while (true) {
+      if (peerSessionController->hasPacket()) {
+        peerSessionController->popReceivedPacket();
+        logger->log(tablog::DEBUG, "receivedPacket");
+      }
+    }
+
+    if (networkingSession.joinable()) {
+      networkingSession.join();
     }
   }
 }

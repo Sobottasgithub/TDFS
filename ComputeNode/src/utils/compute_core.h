@@ -13,7 +13,8 @@ namespace tdfs {
     private:
       std::shared_ptr<tablog::Tablog> logger;
 
-      void udpDiscoverySession(); 
+      void udpDiscoverySession();
+      void peerControllerSession();
   };
 }
 

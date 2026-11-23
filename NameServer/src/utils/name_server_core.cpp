@@ -31,7 +31,7 @@ namespace tdfs {
     // INFO: Wait for Udp to finish setup before passing the instance
     udpDiscoveryInitFuture.wait();
     peerInitFuture.wait();
-    FileDistributionManager fileDistributionManager(this->serverDiscovery);
+    FileDistributionManager fileDistributionManager(this->serverDiscovery, this->peerSessionController);
 
     if (discoveryThread.joinable()) {
       discoveryThread.join();

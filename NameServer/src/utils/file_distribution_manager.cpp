@@ -5,21 +5,23 @@
 #include <arrow/api.h>
 
 #include <arrow/table.h>
-#include <cmath>
 #include <filesystem>
 #include <iostream>
 #include <memory>
+#include <packet_types.h>
+#include <peer_session_controller.h>
 #include <stdexcept>
 #include <string>
 #include <tablog.h>
 #include <tablog_registry.h>
 
 namespace tdfs {
-  FileDistributionManager::FileDistributionManager(std::shared_ptr<tud::ServerDiscovery> serverDiscovery) {
+  FileDistributionManager::FileDistributionManager(std::shared_ptr<tud::ServerDiscovery> serverDiscovery, std::shared_ptr<ttp2::PeerSessionController> peerSessionController) {
     tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
     this->logger = registry->get("TDFS");
 
     this->serverDiscovery = serverDiscovery;
+    this->peerSessionController = peerSessionController;
 
     std::cout << "Provide file path: ";
     std::filesystem::path filePath;
@@ -81,6 +83,7 @@ namespace tdfs {
 
     const int64_t blockSize = config.getBlocksize();
     const int64_t totalRows = inputFile->num_rows();
+    const int nodePort = config.getNodePort();
     int64_t offset = 0;
     int snippetIndex = 0;
     int nodeReplicationDistributionIndex = 0;
@@ -92,7 +95,21 @@ namespace tdfs {
         logger->log(tablog::DEBUG, "Processing rows " + std::to_string(offset) + " to " + std::to_string(offset + currentBatchSize - 1));
         for (int replicationIndex = 0; replicationIndex < currentReplicationCount; replicationIndex++) {
           const std::string nodeIpV4 = computeNodes.at(nodeReplicationDistributionIndex);
-          // TODO: Send slicedTableBlock to compute node
+
+          // INFO: Create Node Packet
+          ttp2::Packet::File file;
+          file.filePath = newFileName;
+          file.start = offset;
+          file.end = (offset + currentBatchSize - 1);
+          file.payload = slicedTableBlock;
+          ttp2::Packet::Packet packet;
+          packet.payload = file;
+          ttp2::PeerSessionController::AddressedPacket addressedPacket;
+          addressedPacket.ip = nodeIpV4.c_str();
+          addressedPacket.port = nodePort;
+          addressedPacket.packet = packet;
+          this->peerSessionController->sendPacket(addressedPacket);
+          
           const std::string realFilePath = newFileName; // TODO: Replace with compute nodes real file location later
           this->fileLocationManager.createReplication(newFileName, snippetIndex, realFilePath, nodeIpV4);
 

@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <sys/epoll.h>
 
+#include <network_helpers.h>
 #include <server_session_controller.h>
 #include <packet_types.h>
 
@@ -18,12 +19,12 @@ namespace tdfs {
     tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
     this->logger = registry->get("TDFS");
 
-    if (!ttp2::ServerSessionController::isValidInterface(interface)) {
+    if (!ttp2::helpers::isValidInterface(interface)) {
         this->logger->log(tablog::ERROR, "Please provide a correct interface");
         return;
     }
 
-    std::string ip = ttp2::ServerSessionController::getLocalIpAddress(interface);
+    std::string ip = ttp2::helpers::getLocalIpAddress(interface);
     sockaddr_in serverAddress;
     serverAddress.sin_family = AF_INET;
     serverAddress.sin_port = htons(port);

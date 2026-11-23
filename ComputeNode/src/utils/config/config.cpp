@@ -51,6 +51,14 @@ namespace tdfs {
   int Config::getUdpDiscoveryPort() {
     return getIntValueFromConfig("/Configuration/UdpDiscovery/Port");
   }
+
+  std::string Config::getUdpInterface() {
+    return getStringValueFromConfig("/Configuration/Udp/Interface");
+  }
+  
+  int Config::getUpdPort() {
+    return getIntValueFromConfig("/Configuration/Udp/Port");
+  }
  
   void Config::loadFile(std::filesystem::path path) {
     pugi::xml_parse_result result = configDocument.load_file(path.c_str());

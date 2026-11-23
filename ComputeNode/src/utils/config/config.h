@@ -24,6 +24,8 @@ namespace tdfs {
       int getApiServerPort();
       std::string getUdpDiscoveryInterface();
       int getUdpDiscoveryPort();
+      std::string getUdpInterface();
+      int getUpdPort();
 
       std::filesystem::path getTdfsConfigDir();
       

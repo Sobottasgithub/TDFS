@@ -9,6 +9,11 @@
     <Port></Port>
   </UdpDiscovery>
 
+  <Udp>
+    <Interface></Interface>
+    <Port></Port>
+  </Udp>
+
   <ApiServer>
     <Interface></Interface>
     <Port></Port>

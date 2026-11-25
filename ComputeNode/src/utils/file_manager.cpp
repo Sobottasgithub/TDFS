@@ -8,6 +8,7 @@
 #include <arrow/csv/writer.h>
 #include <arrow/io/file.h>
 
+#include <stdexcept>
 #include <tablog.h>
 #include <tablog_registry.h>
 
@@ -16,8 +17,12 @@ namespace tdfs {
     tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
     this->logger = registry->get("TDFS");
     tdfs::Config& config = tdfs::Config::getInstance();
+    
     this->rootFilePath = config.getDataDir();
-    // TODO: check if rootFilePath exists
+    if (!std::filesystem::exists(this->rootFilePath)) {
+      logger->log(tablog::ERROR, "Data directory does not exist. Please provide a correct path.");
+      throw std::runtime_error("Data directory does not exist");
+    }
   }
 
   void FileManager::storeFile(ttp2::Packet::File file) {

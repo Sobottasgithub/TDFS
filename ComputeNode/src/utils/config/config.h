@@ -18,7 +18,7 @@ namespace tdfs {
 
       void configure(std::string configFilePath = "");
 
-      std::vector<std::filesystem::path> getDataDirs();
+      std::filesystem::path getDataDir();
       bool getIsFloatingNode();
       std::string getApiServerInterface();
       int getApiServerPort();

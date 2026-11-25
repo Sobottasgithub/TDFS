@@ -27,8 +27,8 @@ namespace tdfs {
     }
   }
   
-  std::vector<std::filesystem::path> Config::getDataDirs() {
-    return getPathValuesFromConfig("/Configuration/DataDirectorys");
+  std::filesystem::path Config::getDataDir() {
+    return getPathValueFromConfig("/Configuration/DataDirectory");
   }
 
   bool Config::getIsFloatingNode() {

@@ -27,7 +27,7 @@ namespace tdfs {
     std::filesystem::path filePath;
     std::cin >> filePath;
 
-    addFile(simulateFileUpload(filePath), filePath);
+    addFile(simulateFileUpload(filePath), filePath.filename());
 
     this->logger->log(tablog::DEBUG, "Done!");
   }
@@ -110,7 +110,7 @@ namespace tdfs {
           addressedPacket.packet = packet;
           this->peerSessionController->sendPacket(addressedPacket);
           
-          const std::string realFilePath = newFileName; // TODO: Replace with compute nodes real file location later
+          const std::string realFilePath = newFileName;
           this->fileLocationManager.createReplication(newFileName, snippetIndex, realFilePath, nodeIpV4);
 
           if (nodeReplicationDistributionIndex + 1 == computeNodes.size()) {

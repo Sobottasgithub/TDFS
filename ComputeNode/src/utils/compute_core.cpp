@@ -17,15 +17,14 @@ namespace tdfs {
   ComputeCore::ComputeCore() {
     tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
     this->logger = registry->get("TDFS");
-
-    this->logger->log(tablog::DEBUG, "Init floating node");
-
+    this->fileManager = std::make_shared<FileManager>();
+    
     std::thread discoveryThread([this]() {
       udpDiscoverySession();
     });
 
     std::thread peerSessionThread([this]() {
-      peerControllerSession();                              
+      peerControllerSession();
     });
 
     if (discoveryThread.joinable()) {
@@ -79,13 +78,13 @@ namespace tdfs {
       peerSessionController->networkingSession();
     });
 
-    while (true) {
+    while (peerSessionController->isConnected()) {
       if (peerSessionController->hasPacket()) {
         ttp2::PeerSessionController::AddressedPacket addresssedPacket = peerSessionController->popReceivedPacket();
         ttp2::Packet::Packet packet = addresssedPacket.packet;
         if (std::holds_alternative<ttp2::Packet::File>(packet.payload)) {
             ttp2::Packet::File file = std::get<ttp2::Packet::File>(packet.payload);
-            logger->log(tablog::INFO, "Start: " + std::to_string(file.start) + " End: " + std::to_string(file.end));
+            logger->log(tablog::INFO, "File: " + file.filePath + "Start: " + std::to_string(file.start) + " End: " + std::to_string(file.end));
         }
         logger->log(tablog::DEBUG, "receivedPacket");
       }

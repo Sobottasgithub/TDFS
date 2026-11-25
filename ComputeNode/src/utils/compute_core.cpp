@@ -3,8 +3,10 @@
 #include "config/config.h"
 
 #include <network_helpers.h>
+#include <packet_types.h>
 #include <peer_session_controller.h>
 #include <client_discovery.h>
+#include <string>
 #include <tablog.h>
 #include <thread>
 #include <algorithm>
@@ -79,7 +81,12 @@ namespace tdfs {
 
     while (true) {
       if (peerSessionController->hasPacket()) {
-        peerSessionController->popReceivedPacket();
+        ttp2::PeerSessionController::AddressedPacket addresssedPacket = peerSessionController->popReceivedPacket();
+        ttp2::Packet::Packet packet = addresssedPacket.packet;
+        if (std::holds_alternative<ttp2::Packet::File>(packet.payload)) {
+            ttp2::Packet::File file = std::get<ttp2::Packet::File>(packet.payload);
+            logger->log(tablog::INFO, "Start: " + std::to_string(file.start) + " End: " + std::to_string(file.end));
+        }
         logger->log(tablog::DEBUG, "receivedPacket");
       }
     }

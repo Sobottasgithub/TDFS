@@ -93,12 +93,15 @@ namespace tdfs {
         std::shared_ptr<arrow::Table> slicedTableBlock = inputFile->Slice(offset, currentBatchSize);
 
         logger->log(tablog::DEBUG, "Processing rows " + std::to_string(offset) + " to " + std::to_string(offset + currentBatchSize - 1));
+        std::filesystem::path snippetFilePath = newFileName.parent_path().string() + "/" + newFileName.stem().string() +
+                                                "-snippet-" + std::to_string(snippetIndex) + newFileName.extension().string();
+        logger->log(tablog::DEBUG, "fileName: " + snippetFilePath.string());
         for (int replicationIndex = 0; replicationIndex < currentReplicationCount; replicationIndex++) {
           const std::string nodeIpV4 = computeNodes.at(nodeReplicationDistributionIndex);
 
           // INFO: Create Node Packet
           ttp2::Packet::File file;
-          file.filePath = newFileName;
+          file.filePath = snippetFilePath;
           file.start = offset;
           file.end = (offset + currentBatchSize - 1);
           file.payload = slicedTableBlock;
@@ -111,7 +114,7 @@ namespace tdfs {
           this->peerSessionController->sendPacket(addressedPacket);
           
           const std::string realFilePath = newFileName;
-          this->fileLocationManager.createReplication(newFileName, snippetIndex, realFilePath, nodeIpV4);
+          this->fileLocationManager.createReplication(newFileName, snippetIndex, snippetFilePath, nodeIpV4);
 
           if (nodeReplicationDistributionIndex + 1 == computeNodes.size()) {
             nodeReplicationDistributionIndex = 0;

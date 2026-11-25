@@ -84,7 +84,7 @@ namespace tdfs {
         ttp2::Packet::Packet packet = addresssedPacket.packet;
         if (std::holds_alternative<ttp2::Packet::File>(packet.payload)) {
             ttp2::Packet::File file = std::get<ttp2::Packet::File>(packet.payload);
-            logger->log(tablog::INFO, "File: " + file.filePath + "Start: " + std::to_string(file.start) + " End: " + std::to_string(file.end));
+            this->fileManager->storeFile(file);
         }
         logger->log(tablog::DEBUG, "receivedPacket");
       }

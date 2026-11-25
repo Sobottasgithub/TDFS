@@ -2,6 +2,12 @@
 
 #include "config/config.h"
 
+#include <filesystem>
+#include <fstream>
+#include <arrow/table.h>
+#include <arrow/csv/writer.h>
+#include <arrow/io/file.h>
+
 #include <tablog.h>
 #include <tablog_registry.h>
 
@@ -11,9 +17,46 @@ namespace tdfs {
     this->logger = registry->get("TDFS");
     tdfs::Config& config = tdfs::Config::getInstance();
     this->rootFilePath = config.getDataDir();
+    // TODO: check if rootFilePath exists
   }
 
   void FileManager::storeFile(ttp2::Packet::File file) {
-    
+    logger->log(tablog::INFO, "File: " + file.filePath +
+                              " Start: " + std::to_string(file.start) +
+                              " End: " + std::to_string(file.end));
+
+    std::string snippetPath = this->rootFilePath.string() + file.filePath;
+
+    // INFO: Create file
+    if (!std::filesystem::exists(snippetPath)) {
+      std::ofstream outfile(snippetPath.c_str());
+      if (outfile.is_open()) {
+        outfile.close();
+      } else {
+        logger->log(tablog::ERROR, "File snippet could not be created!");
+        return;
+      }
+    } else {
+      logger->log(tablog::ERROR, "File already exists!?");
+      return;
+    }
+
+    // INFO: Store payload
+    auto outfileResult = arrow::io::FileOutputStream::Open(snippetPath);
+    if (!arrow::io::FileOutputStream::Open(snippetPath).ok()) {
+      logger->log(tablog::ERROR, "Failed to open file!");
+      return;
+    }
+    std::shared_ptr<arrow::io::FileOutputStream> outfile = *outfileResult;
+
+    arrow::csv::WriteOptions writeOptions = arrow::csv::WriteOptions::Defaults();
+    if (!arrow::csv::WriteCSV(*file.payload, writeOptions, outfile.get()).ok()) {
+      logger->log(tablog::ERROR, "Failed to write Parquet table!");
+      return;
+    }
+
+    if (!outfile->Close().ok()) {
+      logger->log(tablog::ERROR, "Failed to close file!");
+    }
   }
 }

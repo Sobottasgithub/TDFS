@@ -2,6 +2,7 @@
 
 #include <network_helpers.h>
 #include <peer_session_controller.h>
+#include <tdfs_packet_types.h>
 #include <thread>
 
 #include "config/config.h"
@@ -33,9 +34,25 @@ namespace tdfs {
     peerInitFuture.wait();
     FileDistributionManager fileDistributionManager(this->serverDiscovery, this->peerSessionController);
 
+    // TODO: Refactor later.
+    while (true) {
+      if (this->peerSessionController->hasPacket()) {
+        ttp2::PeerSessionController::AddressedPacket addressedPacket = peerSessionController->popReceivedPacket();
+        ttp2::Packet::Packet packet = addressedPacket.packet;
+        if (std::holds_alternative<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload)) {
+          ttp2::Packet::tdfs::CopyFromLocal copyFromLocal = std::get<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload);
+          fileDistributionManager.addFile(copyFromLocal.payload, copyFromLocal.filePath);
+        }
+      }
+    }
+
     if (discoveryThread.joinable()) {
       discoveryThread.join();
-    }    
+    }
+    
+    if (peerControlletThread.joinable()) {
+      peerControlletThread.join();
+    }
   }
 
   void NameServer::udpDiscoverySession(std::promise<void> udpInitDone) {

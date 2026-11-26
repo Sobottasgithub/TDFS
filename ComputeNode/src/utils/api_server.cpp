@@ -15,9 +15,10 @@
 #include <tablog_registry.h>
 
 namespace tdfs {
-  ApiServer::ApiServer(std::string interface, int port) {
+  ApiServer::ApiServer(std::string interface, int port, std::shared_ptr<tdfs::ComputeCore> computeCore) {
     tablog::TablogRegistry* registry = &tablog::TablogRegistry::getInstance();
     this->logger = registry->get("TDFS");
+    this->computeCore = computeCore;
 
     if (!ttp2::helpers::isValidInterface(interface)) {
         this->logger->log(tablog::ERROR, "Please provide a correct interface");
@@ -81,7 +82,7 @@ namespace tdfs {
         if (serverSessionController->hasRequest()) {
           ttp2::Packet::Packet packet = serverSessionController->popRequest();
           this->logger->log(tablog::DEBUG, "Received packet id: " + std::to_string(packet.id));
-          serverSessionController->pushResponse(packet);
+          this->computeCore->pushApiRequest(packet);
         } else {
           std::this_thread::yield();
         }

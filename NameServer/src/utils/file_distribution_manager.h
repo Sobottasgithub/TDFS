@@ -17,7 +17,6 @@ namespace tdfs {
     public:
       FileDistributionManager(std::shared_ptr<tud::ServerDiscovery> serverDiscovery, std::shared_ptr<ttp2::PeerSessionController> peerSessionController);
 
-      std::shared_ptr<arrow::Table> simulateFileUpload(const std::filesystem::path filePath);
       bool addFile(std::shared_ptr<arrow::Table> inputFile, const std::filesystem::path fileName);
 
     private:

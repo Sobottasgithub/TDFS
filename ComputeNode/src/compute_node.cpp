@@ -3,6 +3,7 @@
 #include "utils/api_server.h"
 #include "utils/compute_core.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 #include <thread>
@@ -26,29 +27,18 @@ int main(int argc, char *argv[]) {
         config.configure();
     }
     
-    logger->log(tablog::DEBUG, "IFN: " + std::to_string(config.getIsFloatingNode()));
-    logger->log(tablog::DEBUG, "TSI: " + config.getApiServerInterface());
-    logger->log(tablog::DEBUG, "TSP: " + std::to_string(config.getApiServerPort()));
-    logger->log(tablog::DEBUG, "UDI: " + config.getUdpDiscoveryInterface());
-    logger->log(tablog::DEBUG, "UDP: " + std::to_string(config.getUdpDiscoveryPort()));
     logger->log(tablog::DEBUG, "CONFIG DIR: " + config.getTdfsConfigDir().string());
+
+    std::shared_ptr<tdfs::ComputeCore> computeCore = std::make_shared<tdfs::ComputeCore>();
+    std::thread computeThread = std::thread([&computeCore]() {
+        computeCore->computeCoreCycle();
+    });
 
     std::string interface = config.getApiServerInterface();
     int port = config.getApiServerPort();
-    std::thread apiServerThread([interface, port]() {
-        tdfs::ApiServer apiServer(interface, port);
+    std::thread apiServerThread([interface, port, &computeCore]() {
+        tdfs::ApiServer apiServer(interface, port, computeCore);
     });
-
-    std::thread computeThread;
-    if (config.getIsFloatingNode()) {
-        computeThread = std::thread([]() {
-            tdfs::ComputeCore computeCore;  
-        });
-    } else {
-        computeThread = std::thread([]() {
-            tdfs::ComputeCore computeCore;  
-        });
-    }
 
     if (computeThread.joinable()) {
         computeThread.join();

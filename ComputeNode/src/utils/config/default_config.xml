@@ -18,4 +18,8 @@
     <Interface></Interface>
     <Port></Port>
   </ApiServer>
+
+  <NameServer>
+    <Port></Port>
+  </NameServer>
 </Configuration>

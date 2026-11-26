@@ -59,6 +59,10 @@ namespace tdfs {
   int Config::getUpdPort() {
     return getIntValueFromConfig("/Configuration/Udp/Port");
   }
+
+  int Config::getNameServerPort() {
+    return getIntValueFromConfig("/Configuration/NameServer/Port");
+  }
  
   void Config::loadFile(std::filesystem::path path) {
     pugi::xml_parse_result result = configDocument.load_file(path.c_str());

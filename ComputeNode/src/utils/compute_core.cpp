@@ -8,6 +8,7 @@
 #include <client_discovery.h>
 #include <string>
 #include <tablog.h>
+#include <tdfs_packet_types.h>
 #include <thread>
 #include <algorithm>
 
@@ -108,9 +109,9 @@ namespace tdfs {
       if (peerSessionController->hasPacket()) {
         ttp2::PeerSessionController::AddressedPacket addressedPacket = peerSessionController->popReceivedPacket();
         ttp2::Packet::Packet packet = addressedPacket.packet;
-        if (std::holds_alternative<ttp2::Packet::File>(packet.payload)) {
-            ttp2::Packet::File file = std::get<ttp2::Packet::File>(packet.payload);
-            this->fileManager->storeFile(file);
+        if (std::holds_alternative<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload)) {
+            ttp2::Packet::tdfs::CopyFromLocal copyFromLocal = std::get<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload);
+            this->fileManager->storeFile(copyFromLocal);
         }
         logger->log(tablog::DEBUG, "receivedPacket");
       }

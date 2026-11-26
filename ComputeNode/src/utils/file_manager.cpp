@@ -11,6 +11,7 @@
 #include <stdexcept>
 #include <tablog.h>
 #include <tablog_registry.h>
+#include <tdfs_packet_types.h>
 
 namespace tdfs {
   FileManager::FileManager() {
@@ -25,12 +26,12 @@ namespace tdfs {
     }
   }
 
-  void FileManager::storeFile(ttp2::Packet::File file) {
-    logger->log(tablog::INFO, "File: " + file.filePath +
-                              " Start: " + std::to_string(file.start) +
-                              " End: " + std::to_string(file.end));
+  void FileManager::storeFile(ttp2::Packet::tdfs::CopyFromLocal copyFromLocal) {
+    logger->log(tablog::INFO, "File: " + copyFromLocal.filePath +
+                              " Start: " + std::to_string(copyFromLocal.start) +
+                              " End: " + std::to_string(copyFromLocal.end));
 
-    std::string snippetPath = this->rootFilePath.string() + file.filePath;
+    std::string snippetPath = this->rootFilePath.string() + copyFromLocal.filePath;
 
     // INFO: Create file
     if (!std::filesystem::exists(snippetPath)) {
@@ -55,7 +56,7 @@ namespace tdfs {
     std::shared_ptr<arrow::io::FileOutputStream> outfile = *outfileResult;
 
     arrow::csv::WriteOptions writeOptions = arrow::csv::WriteOptions::Defaults();
-    if (!arrow::csv::WriteCSV(*file.payload, writeOptions, outfile.get()).ok()) {
+    if (!arrow::csv::WriteCSV(*copyFromLocal.payload, writeOptions, outfile.get()).ok()) {
       logger->log(tablog::ERROR, "Failed to write Parquet table!");
       return;
     }

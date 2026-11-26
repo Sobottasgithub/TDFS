@@ -12,6 +12,7 @@
 #include <string>
 #include <tablog.h>
 #include <tablog_registry.h>
+#include <tdfs_packet_types.h>
 
 namespace tdfs {
   FileDistributionManager::FileDistributionManager(std::shared_ptr<tud::ServerDiscovery> serverDiscovery, std::shared_ptr<ttp2::PeerSessionController> peerSessionController) {
@@ -62,13 +63,13 @@ namespace tdfs {
           const std::string nodeIpV4 = computeNodes.at(nodeReplicationDistributionIndex);
 
           // INFO: Create Node Packet
-          ttp2::Packet::File file;
-          file.filePath = snippetFilePath;
-          file.start = offset;
-          file.end = (offset + currentBatchSize - 1);
-          file.payload = slicedTableBlock;
+          ttp2::Packet::tdfs::CopyFromLocal copyFromLocal;
+          copyFromLocal.filePath = snippetFilePath;
+          copyFromLocal.start = offset;
+          copyFromLocal.end = (offset + currentBatchSize - 1);
+          copyFromLocal.payload = slicedTableBlock;
           ttp2::Packet::Packet packet;
-          packet.payload = file;
+          packet.payload = copyFromLocal;
           ttp2::PeerSessionController::AddressedPacket addressedPacket;
           addressedPacket.ip = nodeIpV4.c_str();
           addressedPacket.port = nodePort;

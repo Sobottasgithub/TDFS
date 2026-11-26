@@ -11,7 +11,7 @@ namespace tdfs {
     public:
       FileManager();
 
-      void storeFile(ttp2::Packet::File file);
+      void storeFile(ttp2::Packet::tdfs::CopyFromLocal copyFromLocal);
       
     private:
       std::shared_ptr<tablog::Tablog> logger;

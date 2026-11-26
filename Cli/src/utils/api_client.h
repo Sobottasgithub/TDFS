@@ -15,6 +15,8 @@ namespace tdfs::cli {
 
       std::string getIp();
       int getPort();
+
+      void sendPacket(ttp2::Packet::Packet packet);
       
     private:
       std::shared_ptr<ttp2::ClientSessionController> clientSessionController;

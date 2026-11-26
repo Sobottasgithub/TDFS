@@ -1,4 +1,5 @@
 #include "api_client.h"
+#include <packet_types.h>
 
 namespace tdfs::cli {
   ApiClient::ApiClient() {
@@ -43,5 +44,9 @@ namespace tdfs::cli {
 
   int ApiClient::getPort() {
     return this->port;
+  }
+
+  void ApiClient::sendPacket(ttp2::Packet::Packet packet) {
+    this->clientSessionController->pushRequest(packet);
   }
 }

@@ -5,8 +5,10 @@
 #include <arrow/table.h>
 #include <filesystem>
 
-namespace tdfs::cli::helpers {
-  std::shared_ptr<arrow::Table> simulateFileUpload(const std::filesystem::path filePath);
+namespace tdfs::cli {
+  namespace helpers {
+    std::shared_ptr<arrow::Table> openFile(const std::filesystem::path filePath);
+  }
 }
 
 #endif

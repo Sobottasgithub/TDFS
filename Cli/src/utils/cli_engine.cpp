@@ -39,6 +39,7 @@ namespace tdfs::cli {
         try {
           tokenizer::GenericCommand genericCommand = tokenizer::tokenize(stringQuery);
           ttp2::Packet::Packet packet = interpreter::interpret(genericCommand);
+          this->apiClient.sendPacket(packet);
         } catch (const std::invalid_argument& invalidArgument) {
           std::cout << "\033[45;101m ERROR: \033[0m " << invalidArgument.what() << std::endl;
         }

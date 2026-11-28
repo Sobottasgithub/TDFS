@@ -19,7 +19,12 @@ namespace {
     if (genericCommand.values.size() > 1)
       throw std::invalid_argument("Ls supports only one value: path");
 
-    ls.directory = genericCommand.values.at(0);
+    if (genericCommand.values.size() == 1) {
+      ls.directory = genericCommand.values.at(0);
+    } else {
+      ls.directory = {};  
+    }
+    
     return ls;
   }
 

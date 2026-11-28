@@ -14,6 +14,8 @@ namespace tdfs {
 
         void connect();
         void connectToTdfs();
+        void executeCommand(const std::string stringQuery);
+        void handleResponse(ttp2::Packet::Packet packet);
         
         void displayWelcomeMessage();
         void displayHelp();

@@ -49,4 +49,12 @@ namespace tdfs::cli {
   void ApiClient::sendPacket(ttp2::Packet::Packet packet) {
     this->clientSessionController->pushRequest(packet);
   }
+
+  bool ApiClient::hasResponse() {
+    return this->clientSessionController->hasResponse();
+  }
+
+  ttp2::Packet::Packet ApiClient::popResonse() {
+    return this->clientSessionController->popResponse();
+  }
 }

@@ -1,10 +1,12 @@
 #include "cli_engine.h"
 
+#include <client_session_controller.h>
 #include <iostream>
 #include <packet_types.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <string>
+#include <tdfs_packet_types.h>
 
 #include "tokenizer.h"
 #include "interpreter.h"
@@ -36,14 +38,38 @@ namespace tdfs::cli {
       } else if (!stringQuery.compare("c")) {
         connect();
       } else {
-        try {
-          tokenizer::GenericCommand genericCommand = tokenizer::tokenize(stringQuery);
-          ttp2::Packet::Packet packet = interpreter::interpret(genericCommand);
-          this->apiClient.sendPacket(packet);
-        } catch (const std::invalid_argument& invalidArgument) {
-          std::cout << "\033[45;101m ERROR: \033[0m " << invalidArgument.what() << std::endl;
+        executeCommand(stringQuery);
+      }
+    }
+  }
+
+  void CliEngine::executeCommand(const std::string stringQuery) {
+    try {
+      tokenizer::GenericCommand genericCommand = tokenizer::tokenize(stringQuery);
+      ttp2::Packet::Packet packet = interpreter::interpret(genericCommand);
+      this->apiClient.sendPacket(packet);
+
+      if (std::holds_alternative<ttp2::Packet::tdfs::Ls>(packet.payload)) {
+        while (!this->apiClient.hasResponse()) {}
+        handleResponse(this->apiClient.popResonse());
+      }
+      
+    } catch (const std::invalid_argument& invalidArgument) {
+      std::cout << "\033[45;101m ERROR: \033[0m " << invalidArgument.what() << std::endl;
+    }
+  }
+
+  void CliEngine::handleResponse(ttp2::Packet::Packet packet) {
+    if (std::holds_alternative<ttp2::Packet::tdfs::LsSolution>(packet.payload)) {
+      ttp2::Packet::tdfs::LsSolution lsSolution = std::get<ttp2::Packet::tdfs::LsSolution>(packet.payload);
+      for (int index = 0; index < lsSolution.content.size(); index++) {
+        std::cout << lsSolution.content.at(index);
+
+        if (index+1 < lsSolution.content.size()) {
+          std::cout << " ";
         }
       }
+      std::cout << std::endl;
     }
   }
 

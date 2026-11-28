@@ -97,11 +97,10 @@ namespace tdfs {
           std::this_thread::yield();
         }
 
-        // TODO: Hand back solutions
+        // TODO: Hand back solutions in other thread
         if (this->computeCore->hasApiSocketSolution(clientSocket)) {
             while(this->computeCore->hasApiSocketSolution(clientSocket)) {
-                this->computeCore->getSolutionFromApiSocket(clientSocket);
-                logger->log(tablog::CRITICAL, "Got Api Solution!"); // TODO: Remove later
+                serverSessionController->pushResponse(this->computeCore->getSolutionFromApiSocket(clientSocket));
             }
         }
       }

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <tablog.h>
+#include <tdfs_packet_types.h>
 #include <thread>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -78,17 +79,38 @@ namespace tdfs {
           serverSessionController->networkingSession();
       });
 
+      this->computeCore->registerApiSocket(clientSocket);
+
       while (serverSessionController->isConnected()) {
         if (serverSessionController->hasRequest()) {
           ttp2::Packet::Packet packet = serverSessionController->popRequest();
           this->logger->log(tablog::DEBUG, "Received packet id: " + std::to_string(packet.id));
+
+          if (std::holds_alternative<ttp2::Packet::tdfs::Ls>(packet.payload)) {
+            ttp2::Packet::tdfs::Ls ls = std::get<ttp2::Packet::tdfs::Ls>(packet.payload);
+            ls.requestId = clientSocket;
+            packet.payload = ls;
+          }
+          
           this->computeCore->pushApiRequest(packet);
         } else {
           std::this_thread::yield();
         }
+
+        // TODO: Hand back solutions
+        if (this->computeCore->hasApiSocketSolution(clientSocket)) {
+            while(this->computeCore->hasApiSocketSolution(clientSocket)) {
+                this->computeCore->getSolutionFromApiSocket(clientSocket);
+                logger->log(tablog::CRITICAL, "Got Api Solution!"); // TODO: Remove later
+            }
+        }
       }
 
       this->logger->log(tablog::INFO, "Terminated!");
-      networkingSession.detach();    
+
+      this->computeCore->removeRegisteredApiSocket(clientSocket);      
+      if (networkingSession.joinable()) {
+          networkingSession.join();
+      }    
   }
 }

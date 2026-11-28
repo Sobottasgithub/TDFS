@@ -93,15 +93,32 @@ namespace tdfs {
         const int nameServerPort = config.getNameServerPort();
         if (discoveredNameServers.size() > 0) {
           const std::string nameServerIp = discoveredNameServers.at(0);
-          std::lock_guard<std::mutex> lock(apiRequestMutex);
-          while (!apiRequests.empty()) {
-            ttp2::Packet::Packet currentPacket = apiRequests.at(0);
-            apiRequests.erase(apiRequests.begin());
-            ttp2::PeerSessionController::AddressedPacket addressedPacket;
-            addressedPacket.ip = nameServerIp;
-            addressedPacket.port = nameServerPort;
-            addressedPacket.packet = currentPacket;
-            peerSessionController->sendPacket(addressedPacket);
+          {
+            std::lock_guard<std::mutex> lock(apiRequestMutex);
+            while (!apiRequests.empty()) {
+              ttp2::Packet::Packet currentPacket = apiRequests.at(0);
+              apiRequests.erase(apiRequests.begin());
+
+              // TODO: Only for testing purposes
+              //       Push back to correct api connection
+              if (std::holds_alternative<ttp2::Packet::tdfs::Ls>(currentPacket.payload)) {
+                ttp2::Packet::tdfs::Ls ls = std::get<ttp2::Packet::tdfs::Ls>(currentPacket.payload);
+                ttp2::Packet::tdfs::LsSolution lsSolution;
+                lsSolution.requestId = ls.requestId;
+                lsSolution.content.emplace_back("Test");
+                currentPacket.payload = lsSolution;
+
+                pushSolutionToApiSocket(ls.requestId, currentPacket);
+              
+                continue;
+              }
+            
+              ttp2::PeerSessionController::AddressedPacket addressedPacket;
+              addressedPacket.ip = nameServerIp;
+              addressedPacket.port = nameServerPort;
+              addressedPacket.packet = currentPacket;
+              peerSessionController->sendPacket(addressedPacket);
+            }
           }
         }
       }
@@ -125,5 +142,45 @@ namespace tdfs {
   void ComputeCore::pushApiRequest(ttp2::Packet::Packet packet) {
     std::lock_guard<std::mutex> lock(apiRequestMutex);
     apiRequests.emplace_back(packet);
+  }
+
+  void ComputeCore::registerApiSocket(const int socket) {
+    std::lock_guard<std::mutex> lock(this->apiSolutionMutex);
+    this->apiSolutionMap.try_emplace(socket, std::vector<ttp2::Packet::Packet>{});
+  }
+
+  void ComputeCore::pushSolutionToApiSocket(const int socket, ttp2::Packet::Packet packet) {
+    std::lock_guard<std::mutex> lock(this->apiSolutionMutex);
+    this->apiSolutionMap[socket].emplace_back(packet);
+  }
+
+  ttp2::Packet::Packet ComputeCore::getSolutionFromApiSocket(const int socket) {
+    std::lock_guard<std::mutex> lock(this->apiSolutionMutex);
+    if (this->apiSolutionMap[socket].size() > 0) {
+      ttp2::Packet::Packet packet = this->apiSolutionMap[socket].at(0);
+      this->apiSolutionMap[socket].erase(this->apiSolutionMap[socket].begin());
+      return packet;
+    } else {
+      ttp2::Packet::Packet emptyPacket;
+      return emptyPacket;
+    }
+  }
+
+  int ComputeCore::getSolutionApiSocketSize(const int socket) {
+    std::lock_guard<std::mutex> lock(this->apiSolutionMutex);
+    return this->apiSolutionMap[socket].size();
+  }
+
+  bool ComputeCore::hasApiSocketSolution(const int socket) {
+    std::lock_guard<std::mutex> lock(this->apiSolutionMutex);
+    if (this->apiSolutionMap[socket].size() > 0) {
+      return true;
+    }
+    return false;
+  }
+
+  void ComputeCore::removeRegisteredApiSocket(const int socket) {
+    std::lock_guard<std::mutex> lock(this->apiSolutionMutex);
+    this->apiSolutionMap.erase(socket);
   }
 }

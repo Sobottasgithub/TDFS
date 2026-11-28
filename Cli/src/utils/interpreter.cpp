@@ -16,7 +16,7 @@ namespace {
     if (genericCommand.flags.size() > 0)
       throw std::invalid_argument("Ls unsupported flag(s)");
 
-    if (genericCommand.values.size() > 1 || genericCommand.values.size() < 1)
+    if (genericCommand.values.size() > 1)
       throw std::invalid_argument("Ls supports only one value: path");
 
     ls.directory = genericCommand.values.at(0);

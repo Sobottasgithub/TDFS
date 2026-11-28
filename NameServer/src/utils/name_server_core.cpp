@@ -2,6 +2,8 @@
 
 #include <network_helpers.h>
 #include <peer_session_controller.h>
+#include <string>
+#include <tablog.h>
 #include <tdfs_packet_types.h>
 #include <thread>
 
@@ -9,6 +11,7 @@
 #include "file_distribution_manager.h"
 
 #include <tablog_registry.h>
+#include <variant>
 
 namespace tdfs {
   NameServer::NameServer() {
@@ -42,6 +45,15 @@ namespace tdfs {
         if (std::holds_alternative<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload)) {
           ttp2::Packet::tdfs::CopyFromLocal copyFromLocal = std::get<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload);
           fileDistributionManager.addFile(copyFromLocal.payload, copyFromLocal.filePath);
+        } else if (std::holds_alternative<ttp2::Packet::tdfs::Ls>(packet.payload)) {
+          ttp2::Packet::tdfs::Ls ls = std::get<ttp2::Packet::tdfs::Ls>(packet.payload);
+          ttp2::Packet::tdfs::LsSolution lsSolution;
+          lsSolution.requestId = ls.requestId;
+          lsSolution.content.emplace_back("HElloWorld");
+          packet.payload = lsSolution;
+          addressedPacket.packet = packet;
+          addressedPacket.port = addressedPacket.port - 1; // INFO: subtract send port -1 to get receive port
+          this->peerSessionController->sendPacket(addressedPacket);
         }
       }
     }

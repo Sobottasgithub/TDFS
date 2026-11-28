@@ -99,20 +99,6 @@ namespace tdfs {
               ttp2::Packet::Packet currentPacket = apiRequests.at(0);
               apiRequests.erase(apiRequests.begin());
 
-              // TODO: Only for testing purposes
-              //       Push back to correct api connection
-              if (std::holds_alternative<ttp2::Packet::tdfs::Ls>(currentPacket.payload)) {
-                ttp2::Packet::tdfs::Ls ls = std::get<ttp2::Packet::tdfs::Ls>(currentPacket.payload);
-                ttp2::Packet::tdfs::LsSolution lsSolution;
-                lsSolution.requestId = ls.requestId;
-                lsSolution.content.emplace_back("Test");
-                currentPacket.payload = lsSolution;
-
-                pushSolutionToApiSocket(ls.requestId, currentPacket);
-              
-                continue;
-              }
-            
               ttp2::PeerSessionController::AddressedPacket addressedPacket;
               addressedPacket.ip = nameServerIp;
               addressedPacket.port = nameServerPort;
@@ -127,8 +113,11 @@ namespace tdfs {
         ttp2::PeerSessionController::AddressedPacket addressedPacket = peerSessionController->popReceivedPacket();
         ttp2::Packet::Packet packet = addressedPacket.packet;
         if (std::holds_alternative<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload)) {
-            ttp2::Packet::tdfs::CopyFromLocal copyFromLocal = std::get<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload);
-            this->fileManager->storeFile(copyFromLocal);
+          ttp2::Packet::tdfs::CopyFromLocal copyFromLocal = std::get<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload);
+          this->fileManager->storeFile(copyFromLocal);
+        } else if (std::holds_alternative<ttp2::Packet::tdfs::LsSolution>(packet.payload)) {
+          ttp2::Packet::tdfs::LsSolution lsSolution = std::get<ttp2::Packet::tdfs::LsSolution>(packet.payload);
+          pushSolutionToApiSocket(lsSolution.requestId, packet);
         }
         logger->log(tablog::DEBUG, "receivedPacket");
       }

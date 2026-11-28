@@ -46,14 +46,8 @@ namespace tdfs {
           ttp2::Packet::tdfs::CopyFromLocal copyFromLocal = std::get<ttp2::Packet::tdfs::CopyFromLocal>(packet.payload);
           fileDistributionManager.addFile(copyFromLocal.payload, copyFromLocal.filePath);
         } else if (std::holds_alternative<ttp2::Packet::tdfs::Ls>(packet.payload)) {
-          ttp2::Packet::tdfs::Ls ls = std::get<ttp2::Packet::tdfs::Ls>(packet.payload);
-          ttp2::Packet::tdfs::LsSolution lsSolution;
-          lsSolution.requestId = ls.requestId;
-          lsSolution.content.emplace_back("HElloWorld");
-          packet.payload = lsSolution;
-          addressedPacket.packet = packet;
           addressedPacket.port = addressedPacket.port - 1; // INFO: subtract send port -1 to get receive port
-          this->peerSessionController->sendPacket(addressedPacket);
+          fileDistributionManager.ls(addressedPacket);
         }
       }
     }

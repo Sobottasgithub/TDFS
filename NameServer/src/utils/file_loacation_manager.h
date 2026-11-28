@@ -20,6 +20,7 @@ namespace tdfs {
                              const std::filesystem::path snippetStoragePath,
                              const std::string storageNodeIpv4);
       std::vector<std::filesystem::path> getFileNames();
+      std::vector<std::string> ls(std::filesystem::path path);
       
     private:
       std::shared_ptr<tablog::Tablog> logger;

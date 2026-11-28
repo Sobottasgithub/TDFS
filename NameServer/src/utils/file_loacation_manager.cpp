@@ -200,4 +200,30 @@ namespace tdfs {
     }
     return fileNames;
   }
+
+  std::vector<std::string> FileLocationManager::ls(std::filesystem::path path) {
+    std::vector<std::string> fileNames;
+
+    if (!this->xmlFile.empty()) {
+      pugi::xml_node fileRoot = this->xmlFile.child("Files");
+      for (pugi::xpath_node filePath : fileRoot) {
+        pugi::xml_node file = filePath.node();
+        std::string fileXmlName = file.name();
+        if (!fileXmlName.compare("File")) {
+          pugi::xml_attribute nameAttribute = file.attribute("name");
+          if (nameAttribute) {
+            std::filesystem::path p(nameAttribute.as_string());
+
+            if (p.parent_path().empty() || p.parent_path() == "/") {
+              fileNames.emplace_back(p.filename());
+            } 
+            else {
+              fileNames.emplace_back(p.parent_path());
+            }
+          }
+        }
+      }
+    }
+    return fileNames;
+  }
 }

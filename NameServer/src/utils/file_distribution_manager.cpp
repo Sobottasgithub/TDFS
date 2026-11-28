@@ -97,6 +97,18 @@ namespace tdfs {
     return true;
   }
 
+  bool FileDistributionManager::ls(ttp2::PeerSessionController::AddressedPacket addressedPacket) {
+    ttp2::Packet::Packet packet = addressedPacket.packet;
+    ttp2::Packet::tdfs::Ls ls = std::get<ttp2::Packet::tdfs::Ls>(packet.payload);
+    ttp2::Packet::tdfs::LsSolution lsSolution;
+    lsSolution.requestId = ls.requestId;
+    lsSolution.content = this->fileLocationManager.ls(ls.directory);
+    packet.payload = lsSolution;
+    addressedPacket.packet = packet;
+    this->peerSessionController->sendPacket(addressedPacket);
+    return true;
+  }
+
   std::filesystem::path FileDistributionManager::getUniqueFileName(std::filesystem::path fileName) {
     std::vector<std::filesystem::path> existingFileNames = this->fileLocationManager.getFileNames();
 

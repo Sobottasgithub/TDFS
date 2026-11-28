@@ -18,6 +18,7 @@ namespace tdfs {
       FileDistributionManager(std::shared_ptr<tud::ServerDiscovery> serverDiscovery, std::shared_ptr<ttp2::PeerSessionController> peerSessionController);
 
       bool addFile(std::shared_ptr<arrow::Table> inputFile, const std::filesystem::path fileName);
+      bool ls(ttp2::PeerSessionController::AddressedPacket addressedPacket);
 
     private:
       std::shared_ptr<tablog::Tablog> logger;
